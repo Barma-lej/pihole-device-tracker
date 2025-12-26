@@ -13,6 +13,6 @@
   "integration_type": "hub",
   "platforms": ["device_tracker"],
   "homeassistant": {
-    "python_version": "3.11"
+    "python_version": "3.14"
   }
 }
