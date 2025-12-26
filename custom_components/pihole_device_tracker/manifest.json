@@ -5,14 +5,14 @@
   "config_flow": true,
   "documentation": "https://github.com/Barma-lej/pihole-device-tracker",
   "issue_tracker": "https://github.com/Barma-lej/pihole-device-tracker/issues",
-  "requirements": [
-    "aiohttp>=3.9.0"
-  ],
-  "version": "1.0.0",
+  "homeassistant": {
+    "python_version": "3.11"
+  },
   "iot_class": "local_polling",
   "integration_type": "hub",
   "platforms": ["device_tracker"],
-  "homeassistant": {
-    "python_version": "3.14"
-  }
+  "requirements": [
+    "aiohttp>=3.9.0"
+  ],
+  "version": "1.0.0"
 }
