@@ -1,5 +1,5 @@
 {
-  "domain": "pihole-device-tracker",
+  "domain": "pihole_device_tracker",
   "documentation": "https://github.com/Barma-lej/pihole-device-tracker",
   "issue_tracker": "https://github.com/Barma-lej/pihole-device-tracker/issues",
   "codeowners": ["@Barma-lej"],
