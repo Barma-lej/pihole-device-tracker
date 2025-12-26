@@ -1,114 +1,86 @@
-"""API client for Pi-hole Device Tracker."""
+"""API client for Pi-hole v6.0+."""
 
+import logging
+from typing import Any, Dict, Optional
 import aiohttp
 import asyncio
-import logging
-import json
-from typing import Any, Dict, Optional
 
-LOGGER = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__name__)
 
 
 class PiholeAPIClient:
-    """Client for interacting with Pi-hole API v6.0+.
-    
-    Pi-hole v6.0+ uses FTL API with session-based authentication (SID).
-    No API key needed - just the web password.
-    """
+    """Client for Pi-hole v6.0+ API with FTL authentication."""
 
-    def __init__(
-        self,
-        host: str,
-        password: Optional[str] = None,
-        timeout: int = 10,
-    ) -> None:
+    def __init__(self, host: str, password: str = "", timeout: int = 10):
         """Initialize the API client.
         
         Args:
-            host: Pi-hole host IP address or hostname
-            password: Web interface password (NOT API token)
+            host: Pi-hole host (IP or hostname)
+            password: Web interface password
             timeout: Request timeout in seconds
         """
         self.host = self._normalize_host(host)
-        self.password = password or ""
+        self.password = password
         self.timeout = timeout
         self._sid: Optional[str] = None
 
     @staticmethod
     def _normalize_host(host: str) -> str:
         """Normalize host URL."""
-        host = host.replace("https://", "").replace("http://", "")
-        host = host.rstrip("/")
-        if ":" in host:
-            host = host.split(":")[0]
+        host = host.replace("https://", "").replace("http://", "").strip()
+        if host.endswith("/"):
+            host = host[:-1]
         return host
 
-    async def _async_authenticate(self) -> Optional[str]:
-        """Authenticate with Pi-hole and get session ID (SID).
+    async def authenticate(self) -> bool:
+        """Authenticate and get session ID.
         
         Returns:
-            Session ID (SID) if successful, None otherwise
+            True if successful, False otherwise
         """
         try:
-            if self._sid:
-                # Use cached SID
-                return self._sid
-            
             url = f"http://{self.host}/api/auth"
             payload = {"password": self.password}
-            headers = {"Content-Type": "application/json"}
             
-            LOGGER.debug(f"Authenticating with Pi-hole at {self.host}")
+            _LOGGER.debug(f"Authenticating with Pi-hole at {self.host}")
             
-            timeout = aiohttp.ClientTimeout(total=5, connect=3)
+            timeout = aiohttp.ClientTimeout(total=self.timeout, connect=5)
             
             async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.post(
-                    url, 
-                    json=payload, 
-                    headers=headers
-                ) as resp:
+                async with session.post(url, json=payload) as resp:
                     if resp.status == 200:
                         data = await resp.json()
                         self._sid = data.get("session", {}).get("sid")
                         if self._sid:
-                            LOGGER.debug(f"✓ Successfully authenticated with Pi-hole")
-                            return self._sid
-                        else:
-                            LOGGER.error("No SID returned from authentication")
-                            return None
+                            _LOGGER.debug(f"✓ Authenticated with Pi-hole")
+                            return True
                     elif resp.status == 401:
-                        LOGGER.error("Authentication failed - wrong password")
-                        return None
+                        _LOGGER.error("Authentication failed - invalid password")
                     else:
-                        text = await resp.text()
-                        LOGGER.error(f"Authentication error (HTTP {resp.status}): {text}")
-                        return None
-                        
+                        _LOGGER.error(f"Auth failed with status {resp.status}")
+            
+            return False
+            
         except asyncio.TimeoutError:
-            LOGGER.error("Timeout during authentication")
-            return None
+            _LOGGER.error("Authentication timeout")
+            return False
         except Exception as err:
-            LOGGER.error(f"Authentication error: {err}")
-            return None
+            _LOGGER.error(f"Authentication error: {err}")
+            return False
 
-    async def async_get_status(self) -> Dict[str, Any]:
-        """Get Pi-hole overall status.
+    async def get_devices(self) -> Dict[str, Any]:
+        """Get network devices from Pi-hole.
         
         Returns:
-            Dictionary containing status information including blocking status
+            Dictionary with device data
         """
         try:
-            # Get session ID
-            sid = await self._async_authenticate()
-            if not sid:
-                return {"status": "error", "reason": "authentication_failed"}
+            if not self._sid:
+                if not await self.authenticate():
+                    return {}
             
-            # Get DNS blocking status
-            url = f"http://{self.host}/api/dns/blocking"
-            headers = {"X-FTL-SID": sid}
-            
-            LOGGER.debug(f"Getting Pi-hole status from: {url}")
+            url = f"http://{self.host}/api/network/devices"
+            headers = {"X-FTL-SID": self._sid}
             
             timeout = aiohttp.ClientTimeout(total=self.timeout, connect=5)
             
@@ -116,71 +88,36 @@ class PiholeAPIClient:
                 async with session.get(url, headers=headers) as resp:
                     if resp.status == 200:
                         data = await resp.json()
-                        LOGGER.debug(f"✓ Successfully retrieved Pi-hole status")
-                        return {"status": "success", "blocking": data.get("blocking", False)}
-                    elif resp.status == 401:
-                        LOGGER.error("Unauthorized - re-authenticate required")
-                        self._sid = None  # Clear cache
-                        return await self.async_get_status()  # Retry
-                    else:
-                        text = await resp.text()
-                        LOGGER.error(f"Pi-hole returned HTTP {resp.status}: {text}")
-                        return {"status": "error", "code": resp.status}
-                        
-        except asyncio.TimeoutError:
-            LOGGER.error("Timeout getting Pi-hole status")
-            return {"status": "error", "reason": "timeout"}
-        except Exception as err:
-            LOGGER.error(f"Unexpected error getting status: {err}")
-            return {"status": "error", "reason": "unknown_error"}
-
-    async def async_get_summary(self) -> Dict[str, Any]:
-        """Get Pi-hole summary statistics.
-        
-        Returns:
-            Dictionary with DNS query statistics
-        """
-        try:
-            sid = await self._async_authenticate()
-            if not sid:
-                return {}
-            
-            url = f"http://{self.host}/api/stats/summary"
-            headers = {"X-FTL-SID": sid}
-            
-            timeout = aiohttp.ClientTimeout(total=self.timeout, connect=5)
-            
-            async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.get(url, headers=headers) as resp:
-                    if resp.status == 200:
-                        data = await resp.json()
-                        LOGGER.debug(f"✓ Successfully retrieved summary")
+                        _LOGGER.debug(f"✓ Got devices from Pi-hole")
                         return data
                     elif resp.status == 401:
+                        _LOGGER.warning("Session expired, re-authenticating")
                         self._sid = None
-                        return await self.async_get_summary()  # Retry
+                        return await self.get_devices()  # Retry
                     else:
-                        LOGGER.error(f"Summary returned HTTP {resp.status}")
+                        _LOGGER.error(f"get_devices failed: HTTP {resp.status}")
                         return {}
-                        
+            
+        except asyncio.TimeoutError:
+            _LOGGER.error("get_devices timeout")
+            return {}
         except Exception as err:
-            LOGGER.error(f"Error getting summary: {err}")
+            _LOGGER.error(f"get_devices error: {err}")
             return {}
 
-    async def async_get_clients(self) -> Dict[str, Any]:
-        """Get list of connected clients.
+    async def get_dhcp_leases(self) -> Dict[str, Any]:
+        """Get DHCP leases from Pi-hole.
         
         Returns:
-            Dictionary containing client information
+            Dictionary with DHCP lease data
         """
         try:
-            sid = await self._async_authenticate()
-            if not sid:
-                return {}
+            if not self._sid:
+                if not await self.authenticate():
+                    return {}
             
-            # Get top clients
-            url = f"http://{self.host}/api/stats/clients?count=20"
-            headers = {"X-FTL-SID": sid}
+            url = f"http://{self.host}/api/dhcp/leases"
+            headers = {"X-FTL-SID": self._sid}
             
             timeout = aiohttp.ClientTimeout(total=self.timeout, connect=5)
             
@@ -188,37 +125,35 @@ class PiholeAPIClient:
                 async with session.get(url, headers=headers) as resp:
                     if resp.status == 200:
                         data = await resp.json()
-                        LOGGER.debug(f"✓ Successfully retrieved clients")
+                        _LOGGER.debug(f"✓ Got DHCP leases from Pi-hole")
                         return data
                     elif resp.status == 401:
+                        _LOGGER.warning("Session expired, re-authenticating")
                         self._sid = None
-                        return await self.async_get_clients()  # Retry
+                        return await self.get_dhcp_leases()  # Retry
                     else:
+                        _LOGGER.error(f"get_dhcp_leases failed: HTTP {resp.status}")
                         return {}
-                        
+            
+        except asyncio.TimeoutError:
+            _LOGGER.error("get_dhcp_leases timeout")
+            return {}
         except Exception as err:
-            LOGGER.error(f"Error getting clients: {err}")
+            _LOGGER.error(f"get_dhcp_leases error: {err}")
             return {}
 
-    async def async_test_connection(self) -> bool:
+    async def test_connection(self) -> bool:
         """Test connection to Pi-hole.
         
         Returns:
-            True if connection successful, False otherwise
+            True if connection successful
         """
         try:
-            LOGGER.info(f"Testing connection to Pi-hole at {self.host}...")
-            
-            # Try to authenticate
-            sid = await self._async_authenticate()
-            
-            if sid:
-                LOGGER.info(f"✓ Connection to Pi-hole successful!")
-                return True
-            else:
-                LOGGER.warning(f"✗ Connection to Pi-hole failed - authentication error")
-                return False
-            
+            _LOGGER.info(f"Testing connection to Pi-hole at {self.host}")
+            result = await self.authenticate()
+            if result:
+                _LOGGER.info("✓ Connection to Pi-hole successful")
+            return result
         except Exception as err:
-            LOGGER.error(f"Connection test failed: {err}")
+            _LOGGER.error(f"Connection test failed: {err}")
             return False

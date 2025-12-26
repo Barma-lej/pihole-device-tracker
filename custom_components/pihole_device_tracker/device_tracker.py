@@ -1,162 +1,176 @@
 """Device tracker for Pi-hole."""
 
 import logging
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import Any, Dict, Optional
 
-from homeassistant.components.device_tracker import async_see
-from homeassistant.components.device_tracker.const import SOURCE_TYPE_ROUTER
+from homeassistant.components.device_tracker import SOURCE_TYPE_ROUTER
+from homeassistant.components.device_tracker.device_tracker_entity import DeviceTrackerEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_SCAN_INTERVAL
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.event import async_track_time_interval
+from homeassistant.const import CONF_HOST, CONF_PASSWORD
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import (
+    CoordinatorEntity,
+    DataUpdateCoordinator,
+    UpdateFailed,
+)
+from homeassistant.util import dt as dt_util
 
 from .api import PiholeAPIClient
-from .const import DOMAIN, DEFAULT_SCAN_INTERVAL
+from .const import (
+    CONF_CONSIDER_AWAY,
+    CONF_POLL_INTERVAL,
+    DEFAULT_CONSIDER_AWAY,
+    DEFAULT_POLL_INTERVAL,
+    DOMAIN,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, 
-    config_entry: ConfigEntry, 
-    async_add_entities: Any,
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up device tracker from config entry."""
     
     host = config_entry.data.get(CONF_HOST)
     password = config_entry.data.get(CONF_PASSWORD, "")
-    scan_interval = config_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+    poll_interval = config_entry.data.get(CONF_POLL_INTERVAL, DEFAULT_POLL_INTERVAL)
+    consider_away = config_entry.data.get(CONF_CONSIDER_AWAY, DEFAULT_CONSIDER_AWAY)
     
-    _LOGGER.debug(f"Setting up device tracker for Pi-hole at {host}")
+    _LOGGER.debug(f"Setting up device tracker for {host}")
     
     # Create API client
-    client = PiholeAPIClient(
-        host=host,
-        password=password,
-        timeout=10,
-    )
+    client = PiholeAPIClient(host=host, password=password)
     
-    # Test connection
-    is_connected = await client.async_test_connection()
-    if not is_connected:
-        _LOGGER.error(f"Failed to connect to Pi-hole at {host}")
-        return
-    
-    # Create tracker
-    tracker = PiholeDeviceTracker(
+    # Create coordinator for periodic updates
+    coordinator = PiholeCoordinator(
         hass=hass,
         client=client,
-        config_entry=config_entry,
-        scan_interval=scan_interval,
+        poll_interval=poll_interval,
     )
     
-    # Store tracker in hass data for later access
+    # Fetch initial data
+    await coordinator.async_config_entry_first_refresh()
+    
+    # Store coordinator in hass.data
     if DOMAIN not in hass.data:
         hass.data[DOMAIN] = {}
     
     hass.data[DOMAIN][config_entry.entry_id] = {
+        "coordinator": coordinator,
         "client": client,
-        "tracker": tracker,
+        "consider_away": consider_away,
     }
     
-    # Start the tracker
-    await tracker.async_added_to_hass()
+    # Create device tracker entity
+    entities = [
+        PiholePresenceTracker(
+            coordinator=coordinator,
+            config_entry=config_entry,
+            consider_away=consider_away,
+        )
+    ]
+    
+    async_add_entities(entities)
     
     _LOGGER.debug(f"Device tracker set up for {host}")
 
 
-class PiholeDeviceTracker:
-    """Device tracker for Pi-hole."""
+class PiholeCoordinator(DataUpdateCoordinator):
+    """Coordinator for Pi-hole device tracking."""
     
     def __init__(
         self,
         hass: HomeAssistant,
         client: PiholeAPIClient,
-        config_entry: ConfigEntry,
-        scan_interval: int = DEFAULT_SCAN_INTERVAL,
-    ) -> None:
-        """Initialize device tracker."""
-        self.hass = hass
+        poll_interval: int = DEFAULT_POLL_INTERVAL,
+    ):
+        """Initialize coordinator."""
+        super().__init__(
+            hass=hass,
+            logger=_LOGGER,
+            name="Pi-hole Device Tracker",
+            update_interval=timedelta(seconds=poll_interval),
+        )
         self.client = client
+        self.devices: Dict[str, Dict[str, Any]] = {}
+    
+    async def _async_update_data(self) -> Dict[str, Any]:
+        """Fetch data from Pi-hole."""
+        try:
+            _LOGGER.debug("Fetching devices from Pi-hole")
+            
+            # Fetch devices and DHCP info
+            devices = await self.client.get_devices()
+            dhcp = await self.client.get_dhcp_leases()
+            
+            # Process devices
+            processed_devices = {}
+            
+            if isinstance(devices, dict):
+                for device_id, device_info in devices.items():
+                    if isinstance(device_info, dict):
+                        mac = device_info.get("hwaddr", device_id)
+                        processed_devices[mac] = {
+                            "hostname": device_info.get("name", "Unknown"),
+                            "ips": device_info.get("ipaddrs", []),
+                            "last_query": device_info.get("lastquery", 0),
+                            "first_seen": device_info.get("firstseen", 0),
+                        }
+            
+            self.devices = processed_devices
+            _LOGGER.debug(f"Updated {len(processed_devices)} devices")
+            
+            return {
+                "devices": processed_devices,
+                "dhcp": dhcp if isinstance(dhcp, dict) else {},
+            }
+            
+        except Exception as err:
+            _LOGGER.error(f"Error fetching data: {err}")
+            raise UpdateFailed(f"Error communicating with Pi-hole: {err}")
+
+
+class PiholePresenceTracker(CoordinatorEntity, DeviceTrackerEntity):
+    """Device tracker for Pi-hole presence."""
+    
+    _attr_name = "Presence via Pi-hole"
+    _attr_unique_id = "pihole_presence_tracker"
+    _attr_source_type = SOURCE_TYPE_ROUTER
+    
+    def __init__(
+        self,
+        coordinator: PiholeCoordinator,
+        config_entry: ConfigEntry,
+        consider_away: int = DEFAULT_CONSIDER_AWAY,
+    ):
+        """Initialize device tracker."""
+        super().__init__(coordinator)
         self.config_entry = config_entry
-        self.scan_interval = scan_interval
-        self._devices: Dict[str, Dict[str, Any]] = {}
-        self._name = f"Pi-hole ({client.host})"
-        self._unsub_update: Optional[Any] = None
+        self.consider_away = consider_away
+        self._attr_device_name = f"Pi-hole ({config_entry.data.get(CONF_HOST)})"
+    
+    @property
+    def available(self) -> bool:
+        """Return if entity is available."""
+        return self.coordinator.last_update_success
+    
+    async def async_update(self) -> None:
+        """Update device tracker."""
+        await self.coordinator.async_request_refresh()
+    
+    def __init__(self, coordinator, config_entry, consider_away=DEFAULT_CONSIDER_AWAY):
+        """Initialize."""
+        super().__init__(coordinator)
+        self.config_entry = config_entry
+        self.consider_away = consider_away
+        self._tracked_devices: Dict[str, str] = {}
     
     async def async_added_to_hass(self) -> None:
         """When entity is added to hass."""
-        _LOGGER.debug(f"Device tracker added to hass")
-        # Start periodic update
-        await self._async_update_devices()
-        self._schedule_update()
-    
-    async def async_will_remove_from_hass(self) -> None:
-        """When entity will be removed from hass."""
-        if self._unsub_update:
-            self._unsub_update()
-    
-    def _schedule_update(self) -> None:
-        """Schedule next update."""
-        self._unsub_update = async_track_time_interval(
-            self.hass,
-            self._async_update_devices,
-            timedelta(seconds=self.scan_interval),
-        )
-    
-    async def _async_update_devices(self, now: Any = None) -> None:
-        """Update devices from Pi-hole."""
-        try:
-            _LOGGER.debug("Updating devices from Pi-hole")
-            
-            # Get status
-            status = await self.client.async_get_status()
-            
-            if status.get("status") == "success":
-                blocking = status.get("blocking")
-                _LOGGER.debug(f"Pi-hole status: Blocking is {'enabled' if blocking else 'disabled'}")
-            else:
-                _LOGGER.error(f"Failed to get Pi-hole status: {status}")
-            
-            # Get clients/devices
-            clients = await self.client.async_get_clients()
-            if isinstance(clients, dict) and clients:
-                self._devices = clients
-                _LOGGER.debug(f"Updated {len(clients)} devices from Pi-hole")
-                
-                # Report devices to Home Assistant
-                await self._async_see_devices()
-            
-        except Exception as err:
-            _LOGGER.error(f"Error updating device list: {err}")
-    
-    async def _async_see_devices(self) -> None:
-        """Report devices to Home Assistant."""
-        for device_id, device_info in self._devices.items():
-            try:
-                # Extract device information
-                if isinstance(device_info, dict):
-                    device_name = device_info.get("name", f"Device {device_id}")
-                    device_ip = device_info.get("ip", "")
-                    device_mac = device_info.get("hwaddr", device_id)
-                else:
-                    device_name = f"Device {device_id}"
-                    device_ip = ""
-                    device_mac = device_id
-                
-                # Report device to Home Assistant
-                await async_see(
-                    self.hass,
-                    mac=device_mac,
-                    host_name=device_name,
-                    source_type=SOURCE_TYPE_ROUTER,
-                    source=DOMAIN,
-                    attributes={
-                        "ip": device_ip,
-                        "host": self.client.host,
-                    }
-                )
-                
-            except Exception as err:
-                _LOGGER.error(f"Error reporting device {device_id}: {err}")
+        await super().async_added_to_hass()
+        self.async_write_ha_state()

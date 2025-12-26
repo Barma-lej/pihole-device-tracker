@@ -1,25 +1,30 @@
 """Constants for Pi-hole Device Tracker integration."""
 
-# Domain
 DOMAIN = "pihole_device_tracker"
 
 # Configuration
 CONF_HOST = "host"
 CONF_PASSWORD = "password"
-CONF_SCAN_INTERVAL = "scan_interval"
+CONF_POLL_INTERVAL = "poll_interval"
+CONF_CONSIDER_AWAY = "consider_away"
 
-# Default values
-DEFAULT_SCAN_INTERVAL = 30  # seconds
+# Defaults
+DEFAULT_POLL_INTERVAL = 30  # seconds
+DEFAULT_CONSIDER_AWAY = 900  # 15 minutes in seconds
 DEFAULT_TIMEOUT = 10  # seconds
 
+# API
+PIHOLE_API_BASE = "/api"
+PIHOLE_DEVICES_ENDPOINT = "/api/network/devices"
+PIHOLE_DHCP_ENDPOINT = "/api/dhcp/leases"
+PIHOLE_AUTH_ENDPOINT = "/api/auth"
+
 # Attributes
-ATTR_DEVICE_NAME = "device_name"
-ATTR_DEVICE_IP = "device_ip"
-ATTR_LAST_SEEN = "last_seen"
+ATTR_MAC = "mac"
+ATTR_IP = "ip"
+ATTR_HOSTNAME = "hostname"
+ATTR_LAST_QUERY = "last_query"
+ATTR_FIRST_SEEN = "first_seen"
 
 # Platforms
-PLATFORMS = ["device_tracker"]
-
-# API Endpoints
-API_TIMEOUT = 10
-PIHOLE_API_PATH = "/api"  # Pi-hole v6.0+ API path
+PLATFORMS = ["device_tracker", "sensor"]
