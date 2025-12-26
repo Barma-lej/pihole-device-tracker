@@ -2,29 +2,24 @@
 
 DOMAIN = "pihole_device_tracker"
 
-# Configuration
+CONF_AWAY_TIME = "away_time"
 CONF_HOST = "host"
-CONF_PASSWORD = "password"
-CONF_POLL_INTERVAL = "poll_interval"
-CONF_CONSIDER_AWAY = "consider_away"
+CONF_SCAN_INTERVAL = "scan_interval"
 
-# Defaults
-DEFAULT_POLL_INTERVAL = 30  # seconds
-DEFAULT_CONSIDER_AWAY = 900  # 15 minutes in seconds
-DEFAULT_TIMEOUT = 10  # seconds
+DEFAULT_HOST = "http://pi.hole"
+DEFAULT_PASSWORD = ""  # Password is required for DHCP API access
+DEFAULT_SCAN_INTERVAL = 30  # seconds
+DEFAULT_AWAY_TIME = 900  # seconds → 15 min
 
-# API
-PIHOLE_API_BASE = "/api"
-PIHOLE_DEVICES_ENDPOINT = "/api/network/devices"
-PIHOLE_DHCP_ENDPOINT = "/api/dhcp/leases"
-PIHOLE_AUTH_ENDPOINT = "/api/auth"
-
-# Attributes
-ATTR_MAC = "mac"
-ATTR_IP = "ip"
-ATTR_HOSTNAME = "hostname"
-ATTR_LAST_QUERY = "last_query"
+ATTR_INTERFACE = "interface"
 ATTR_FIRST_SEEN = "first_seen"
+ATTR_LAST_QUERY = "last_query"
+ATTR_NUM_QUERIES = "num_queries"
+ATTR_MAC_VENDOR = "mac_vendor"
+ATTR_IPS = "ips"
+ATTR_NAME = "name"
+ATTR_DHCP_EXPIRES = "dhcp_expires"
 
-# Platforms
-PLATFORMS = ["device_tracker", "sensor"]
+AUTH_ENDPOINT = "/api/auth"  # for FTL authentication
+LEASES_ENDPOINT = "/api/dhcp/leases"
+DEVICES_ENDPOINT = "/api/network/devices?max_devices=999&max_addresses=24"
