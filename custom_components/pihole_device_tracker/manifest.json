@@ -1,0 +1,18 @@
+{
+  "domain": "pihole_device_tracker",
+  "name": "Pi-hole Device Tracker",
+  "codeowners": ["@Barma-lej"],
+  "config_flow": true,
+  "documentation": "https://github.com/Barma-lej/pihole-device-tracker",
+  "issue_tracker": "https://github.com/Barma-lej/pihole-device-tracker/issues",
+  "requirements": [
+    "aiohttp>=3.9.0"
+  ],
+  "version": "1.0.0",
+  "iot_class": "local_polling",
+  "integration_type": "hub",
+  "platforms": ["device_tracker"],
+  "homeassistant": {
+    "python_version": "3.11"
+  }
+}

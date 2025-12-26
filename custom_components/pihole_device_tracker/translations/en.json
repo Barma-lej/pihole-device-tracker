@@ -1,0 +1,19 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Pi-hole",
+        "description": "Enter the IP address or hostname of your Pi-hole instance. The API key is optional.",
+        "data": {
+          "host": "Pi-hole Host (IP or hostname)",
+          "api_key": "API Key (optional)",
+          "interval": "Update Interval (seconds)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to Pi-hole",
+      "unknown": "Unexpected error"
+    }
+  }
+}
