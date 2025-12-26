@@ -16,24 +16,26 @@ A Home Assistant integration for tracking devices connected to Pi-hole.
 
 1. Open Home Assistant
 2. Go to HACS → Integrations
-3. Search for "Pi-hole Device Tracker"
-4. Click Install
-5. Restart Home Assistant
+3. Click "+" button
+4. Search for "Pi-hole Device Tracker"
+5. Click Install
+6. Restart Home Assistant
 
 ### Manual Installation
 
-1. Copy `custom_components/pihole_device_tracker` to `config/custom_components/`
-2. Restart Home Assistant
-3. Go to Settings → Devices & Services → Create Automation
-4. Search for "Pi-hole Device Tracker"
-5. Configure your Pi-hole instance
+1. Download the repository as ZIP
+2. Extract to `config/custom_components/pihole_device_tracker/`
+3. Restart Home Assistant
+4. Go to Settings → Devices & Services
+5. Click "Create Integration"
+6. Search for "Pi-hole Device Tracker"
 
 ## Configuration
 
-### Basic Setup
+### Setup Flow
 
 1. Go to Settings → Devices & Services
-2. Click "Create Automation"
+2. Click "Create Integration"
 3. Select "Pi-hole Device Tracker"
 4. Enter:
    - **Host**: IP address or hostname (e.g., `192.168.1.100`)

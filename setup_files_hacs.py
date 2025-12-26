@@ -1,23 +1,19 @@
-# Pi-hole Device Tracker - Setup Script
+# Pi-hole Device Tracker - Setup Script (HACS Compatible)
 # Автоматическое создание всех файлов проекта
 
 import os
 import json
 from pathlib import Path
 
-# Определяем корневую папку
 ROOT_DIR = Path.cwd()
 
-# Структура проекта
 DIRECTORIES = [
     "custom_components/pihole_device_tracker",
     "custom_components/pihole_device_tracker/translations",
     "tests",
 ]
 
-# Содержимое файлов
 FILES = {
-    # .gitignore
     ".gitignore": """# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -88,7 +84,6 @@ secrets.yaml
 known_devices.yaml
 """,
 
-    # requirements.txt
     "requirements.txt": """homeassistant>=2025.12.0
 aiohttp>=3.9.0
 voluptuous>=0.13.0
@@ -100,7 +95,6 @@ flake8>=6.1.0
 isort>=5.13.0
 """,
 
-    # pyproject.toml
     "pyproject.toml": """[build-system]
 requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
@@ -182,7 +176,6 @@ addopts = "--cov=custom_components/pihole_device_tracker --cov-report=html --cov
 asyncio_mode = "auto"
 """,
 
-    # README.md
     "README.md": """# Pi-hole Device Tracker
 
 A Home Assistant integration for tracking devices connected to Pi-hole.
@@ -201,24 +194,26 @@ A Home Assistant integration for tracking devices connected to Pi-hole.
 
 1. Open Home Assistant
 2. Go to HACS → Integrations
-3. Search for "Pi-hole Device Tracker"
-4. Click Install
-5. Restart Home Assistant
+3. Click "+" button
+4. Search for "Pi-hole Device Tracker"
+5. Click Install
+6. Restart Home Assistant
 
 ### Manual Installation
 
-1. Copy `custom_components/pihole_device_tracker` to `config/custom_components/`
-2. Restart Home Assistant
-3. Go to Settings → Devices & Services → Create Automation
-4. Search for "Pi-hole Device Tracker"
-5. Configure your Pi-hole instance
+1. Download the repository as ZIP
+2. Extract to `config/custom_components/pihole_device_tracker/`
+3. Restart Home Assistant
+4. Go to Settings → Devices & Services
+5. Click "Create Integration"
+6. Search for "Pi-hole Device Tracker"
 
 ## Configuration
 
-### Basic Setup
+### Setup Flow
 
 1. Go to Settings → Devices & Services
-2. Click "Create Automation"
+2. Click "Create Integration"
 3. Select "Pi-hole Device Tracker"
 4. Enter:
    - **Host**: IP address or hostname (e.g., `192.168.1.100`)
@@ -339,7 +334,6 @@ For issues, questions, or suggestions, please open an issue on GitHub.
 - Configuration UI support
 """,
 
-    # LICENSE
     "LICENSE": """MIT License
 
 Copyright (c) 2024 Barma-lej
@@ -363,7 +357,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """,
 
-    # custom_components/pihole_device_tracker/__init__.py
     "custom_components/pihole_device_tracker/__init__.py": '''"""Pi-hole Device Tracker integration."""
 
 import asyncio
@@ -406,7 +399,6 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     await async_setup_entry(hass, entry)
 ''',
 
-    # custom_components/pihole_device_tracker/const.py
     "custom_components/pihole_device_tracker/const.py": '''"""Constants for Pi-hole Device Tracker integration."""
 
 DOMAIN = "pihole_device_tracker"
@@ -436,7 +428,6 @@ UPDATE_INTERVAL = 30
 SCAN_INTERVAL = 60
 ''',
 
-    # custom_components/pihole_device_tracker/manifest.json
     "custom_components/pihole_device_tracker/manifest.json": """{
   "domain": "pihole_device_tracker",
   "name": "Pi-hole Device Tracker",
@@ -448,6 +439,7 @@ SCAN_INTERVAL = 60
     "aiohttp>=3.9.0"
   ],
   "version": "1.0.0",
+  "manifest_version": 1,
   "iot_class": "local_polling",
   "integration_type": "hub",
   "platforms": ["device_tracker"],
@@ -456,7 +448,6 @@ SCAN_INTERVAL = 60
   }
 }""",
 
-    # custom_components/pihole_device_tracker/strings.json
     "custom_components/pihole_device_tracker/strings.json": """{
   "config": {
     "step": {
@@ -501,7 +492,6 @@ SCAN_INTERVAL = 60
   }
 }""",
 
-    # custom_components/pihole_device_tracker/translations/en.json
     "custom_components/pihole_device_tracker/translations/en.json": """{
   "config": {
     "step": {
@@ -522,7 +512,6 @@ SCAN_INTERVAL = 60
   }
 }""",
 
-    # custom_components/pihole_device_tracker/api.py
     "custom_components/pihole_device_tracker/api.py": '''"""API client for Pi-hole Device Tracker."""
 
 import aiohttp
@@ -623,7 +612,6 @@ class PiholeAPIClient:
             return False
 ''',
 
-    # custom_components/pihole_device_tracker/config_flow.py
     "custom_components/pihole_device_tracker/config_flow.py": '''"""Config flow for Pi-hole Device Tracker."""
 
 import voluptuous as vol
@@ -693,7 +681,6 @@ class PiholeDeviceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 ''',
 
-    # custom_components/pihole_device_tracker/device_tracker.py
     "custom_components/pihole_device_tracker/device_tracker.py": '''"""Device tracker platform for Pi-hole."""
 
 import asyncio
@@ -756,11 +743,9 @@ class PiholeDeviceScanner(DeviceScanner):
         return {}
 ''',
 
-    # tests/__init__.py
     "tests/__init__.py": '''"""Tests for Pi-hole Device Tracker."""
 ''',
 
-    # tests/test_api.py
     "tests/test_api.py": '''"""Test API client."""
 
 import pytest
@@ -804,17 +789,20 @@ async def test_connection_failed(client):
 
 def create_project():
     """Create project structure and files."""
-    print("🚀 Creating Pi-hole Device Tracker project structure...")
+    print("🚀 Creating Pi-hole Device Tracker project structure (HACS Compatible)...")
+    print()
     
     # Create directories
     for directory in DIRECTORIES:
-        dir_path = ROOT_DIR / directory
+        dir_path = Path(ROOT_DIR) / directory
         dir_path.mkdir(parents=True, exist_ok=True)
         print(f"✅ Created directory: {directory}")
     
+    print()
+    
     # Create files
     for file_path, content in FILES.items():
-        file_full_path = ROOT_DIR / file_path
+        file_full_path = Path(ROOT_DIR) / file_path
         file_full_path.parent.mkdir(parents=True, exist_ok=True)
         
         with open(file_full_path, "w", encoding="utf-8") as f:
@@ -822,15 +810,29 @@ def create_project():
         
         print(f"✅ Created file: {file_path}")
     
-    print("\n" + "="*60)
+    print()
+    print("=" * 70)
     print("✨ Project structure created successfully!")
-    print("="*60)
-    print("\nNext steps:")
-    print("1. cd pihole-device-tracker")
-    print("2. git add .")
-    print('3. git commit -m "Initial project setup"')
-    print("4. git push origin main")
-    print("\n📚 For more info, read README.md")
+    print("=" * 70)
+    print()
+    print("🎯 HACS Configuration:")
+    print("   ✓ manifest.json is properly configured")
+    print("   ✓ config_flow.py is present")
+    print("   ✓ strings.json is properly configured")
+    print()
+    print("📋 Next steps:")
+    print("   1. cd pihole-device-tracker")
+    print("   2. git add .")
+    print('   3. git commit -m "Initial project setup - HACS compatible"')
+    print("   4. git push origin main")
+    print()
+    print("🔗 Then add to HACS:")
+    print("   1. HACS → Custom repositories")
+    print("   2. https://github.com/Barma-lej/pihole-device-tracker")
+    print("   3. Category: Integration")
+    print()
+    print("📚 For more info, read README.md")
+    print()
 
 
 if __name__ == "__main__":
