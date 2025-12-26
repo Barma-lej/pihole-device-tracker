@@ -1,0 +1,8 @@
+{
+  "name": "Pi-hole Device Tracker",
+  "homeassistant": "2025.12.0",
+  "documentation": "https://github.com/Barma-lej/pihole-device-tracker",
+  "issue_tracker": "https://github.com/Barma-lej/pihole-device-tracker/issues",
+  "requirements": ["aiohttp>=3.9.0"],
+  "content_in_root": false
+}
