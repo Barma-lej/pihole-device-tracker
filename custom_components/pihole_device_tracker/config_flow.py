@@ -8,7 +8,6 @@ from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import PiholeAPIClient
 from .const import DOMAIN, DEFAULT_SCAN_INTERVAL
@@ -36,6 +35,10 @@ class PiholeDeviceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: Dict[str, str] = {}
 
         if user_input is not None:
+            # Check if already configured
+            await self.async_set_unique_id(user_input[CONF_HOST])
+            self._abort_if_unique_id_configured()
+            
             try:
                 # Test connection to Pi-hole
                 await self._async_test_connection(
@@ -44,8 +47,10 @@ class PiholeDeviceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 )
             except ConnectionError:
                 errors["base"] = "cannot_connect"
+                _LOGGER.error(f"Cannot connect to Pi-hole at {user_input[CONF_HOST]}")
             except AuthenticationError:
                 errors["base"] = "invalid_auth"
+                _LOGGER.error(f"Authentication failed for Pi-hole at {user_input[CONF_HOST]}")
             except Exception as err:
                 _LOGGER.error(f"Unexpected error: {err}")
                 errors["base"] = "unknown"
@@ -60,10 +65,6 @@ class PiholeDeviceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=STEP_USER_DATA_SCHEMA,
             errors=errors,
-            description_placeholders={
-                "host_hint": "e.g., 192.168.1.100 or pi.hole",
-                "password_hint": "Web interface password (leave empty if no password)",
-            },
         )
 
     async def _async_test_connection(
@@ -99,6 +100,8 @@ class PiholeDeviceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             
             return True
             
+        except AuthenticationError:
+            raise
         except Exception as err:
             _LOGGER.error(f"Connection test failed: {err}")
             if "authentication" in str(err).lower() or "401" in str(err):
