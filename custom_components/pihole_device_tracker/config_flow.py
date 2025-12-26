@@ -1,32 +1,27 @@
-"""Config flow for Pi-hole Device Tracker."""
+"""Config flow for Pi-hole Device Tracker integration."""
 
-import voluptuous as vol
+import logging
 from typing import Any, Dict, Optional
 
+import voluptuous as vol
 from homeassistant import config_entries
+from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import PiholeAPIClient
-from .const import CONF_INTERVAL, DEFAULT_INTERVAL, DOMAIN
+from .const import DOMAIN, DEFAULT_SCAN_INTERVAL
 
-CONF_HOST = "host"
-CONF_API_KEY = "api_key"
+_LOGGER = logging.getLogger(__name__)
 
-
-async def validate_input(
-    hass: HomeAssistant, data: Dict[str, Any]
-) -> Dict[str, Any]:
-    """Validate the user input."""
-    client = PiholeAPIClient(
-        host=data[CONF_HOST],
-        api_key=data.get(CONF_API_KEY),
-    )
-
-    if not await client.async_test_connection():
-        raise ValueError("Cannot connect to Pi-hole")
-
-    return {"title": f"Pi-hole ({data[CONF_HOST]})"}
+STEP_USER_DATA_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_HOST): str,
+        vol.Optional(CONF_PASSWORD, default=""): str,
+        vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): int,
+    }
+)
 
 
 class PiholeDeviceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -42,26 +37,79 @@ class PiholeDeviceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             try:
-                info = await validate_input(self.hass, user_input)
+                # Test connection to Pi-hole
+                await self._async_test_connection(
+                    user_input[CONF_HOST],
+                    user_input[CONF_PASSWORD],
+                )
+            except ConnectionError:
+                errors["base"] = "cannot_connect"
+            except AuthenticationError:
+                errors["base"] = "invalid_auth"
+            except Exception as err:
+                _LOGGER.error(f"Unexpected error: {err}")
+                errors["base"] = "unknown"
+            else:
+                # Create entry if connection successful
                 return self.async_create_entry(
-                    title=info["title"],
+                    title=f"Pi-hole ({user_input[CONF_HOST]})",
                     data=user_input,
                 )
-            except ValueError:
-                errors["base"] = "cannot_connect"
-            except Exception:
-                errors["base"] = "unknown"
-
-        data_schema = vol.Schema(
-            {
-                vol.Required(CONF_HOST): str,
-                vol.Optional(CONF_API_KEY): str,
-                vol.Optional(CONF_INTERVAL, default=DEFAULT_INTERVAL): int,
-            }
-        )
 
         return self.async_show_form(
             step_id="user",
-            data_schema=data_schema,
+            data_schema=STEP_USER_DATA_SCHEMA,
             errors=errors,
+            description_placeholders={
+                "host_hint": "e.g., 192.168.1.100 or pi.hole",
+                "password_hint": "Web interface password (leave empty if no password)",
+            },
         )
+
+    async def _async_test_connection(
+        self,
+        host: str,
+        password: str,
+    ) -> bool:
+        """Test connection to Pi-hole.
+        
+        Args:
+            host: Pi-hole host IP or hostname
+            password: Web interface password
+            
+        Returns:
+            True if connection successful
+            
+        Raises:
+            ConnectionError: If cannot connect to Pi-hole
+            AuthenticationError: If authentication fails
+        """
+        try:
+            client = PiholeAPIClient(
+                host=host,
+                password=password,
+                timeout=10,
+            )
+            
+            # Test connection
+            is_connected = await client.async_test_connection()
+            
+            if not is_connected:
+                raise AuthenticationError("Authentication failed with Pi-hole")
+            
+            return True
+            
+        except Exception as err:
+            _LOGGER.error(f"Connection test failed: {err}")
+            if "authentication" in str(err).lower() or "401" in str(err):
+                raise AuthenticationError(f"Invalid credentials: {err}")
+            else:
+                raise ConnectionError(f"Cannot connect to Pi-hole: {err}")
+
+
+class ConnectionError(Exception):
+    """Error connecting to Pi-hole."""
+
+
+class AuthenticationError(Exception):
+    """Error authenticating with Pi-hole."""
