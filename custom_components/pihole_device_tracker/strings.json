@@ -2,41 +2,37 @@
   "config": {
     "step": {
       "user": {
-        "title": "Connect to Pi-hole",
-        "description": "Enter the IP address or hostname of your Pi-hole instance. The API key is optional.",
+        "title": "Configure Pi-hole Device Tracker",
+        "description": "Set up Pi-hole Device Tracker integration",
         "data": {
           "host": "Pi-hole Host (IP or hostname)",
-          "api_key": "API Key (optional)",
-          "interval": "Update Interval (seconds)"
+          "password": "Web Interface Password",
+          "scan_interval": "Scan Interval (seconds)"
         },
         "data_description": {
-          "host": "Example: 192.168.1.100",
-          "api_key": "Leave empty if authentication not required",
-          "interval": "How often to check for device updates (default: 30)"
+          "host": "e.g., 192.168.1.100 or pi.hole",
+          "password": "Leave empty if no password is set",
+          "scan_interval": "How often to check Pi-hole for updates"
         }
       }
     },
     "error": {
       "cannot_connect": "Failed to connect to Pi-hole. Check the host address and network connectivity.",
-      "unknown": "An unexpected error occurred."
+      "invalid_auth": "Invalid authentication. Check the password.",
+      "unknown": "An unexpected error occurred. Check the logs for more information."
+    },
+    "abort": {
+      "already_configured": "This Pi-hole instance is already configured."
     }
   },
   "options": {
     "step": {
       "init": {
         "title": "Pi-hole Device Tracker Options",
-        "description": "Configure Pi-hole Device Tracker settings",
+        "description": "Adjust Pi-hole Device Tracker settings",
         "data": {
-          "interval": "Update Interval (seconds)",
-          "presence_timeout": "Presence Timeout (minutes)"
+          "scan_interval": "Scan Interval (seconds)"
         }
-      }
-    }
-  },
-  "entity": {
-    "device_tracker": {
-      "pihole_tracker": {
-        "name": "Pi-hole Device Tracker"
       }
     }
   }
