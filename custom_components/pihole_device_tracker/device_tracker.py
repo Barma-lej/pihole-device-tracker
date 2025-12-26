@@ -4,10 +4,8 @@ import logging
 from datetime import timedelta
 from typing import Any, Dict, Optional
 
-from homeassistant.components.device_tracker import (
-    SOURCE_TYPE_ROUTER,
-    async_see,
-)
+from homeassistant.components.device_tracker import async_see
+from homeassistant.components.device_tracker.const import SOURCE_TYPE_ROUTER
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant

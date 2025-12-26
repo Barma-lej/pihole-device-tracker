@@ -7,7 +7,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
-from .const import DOMAIN, PLATFORMS
+from .const import DOMAIN
 
 _LOGGER: logging.Logger = logging.getLogger(__name__)
 
@@ -25,6 +25,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     }
     
     # Forward the setup to the device tracker platform
+    # Use await to properly handle platform loading
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS_LIST)
     
     _LOGGER.debug(f"Set up entry {entry.entry_id} for {entry.title}")
