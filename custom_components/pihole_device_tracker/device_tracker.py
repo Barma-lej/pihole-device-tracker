@@ -45,6 +45,7 @@ class PiholeTracker(CoordinatorEntity, TrackerEntity):
     """Presence via Pi-hole device tracker."""
 
     _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_source_type = "router"
 
     def _get_device_name(self) -> str:
         """Определить имя устройства: name → IP → MAC."""
@@ -86,15 +87,14 @@ class PiholeTracker(CoordinatorEntity, TrackerEntity):
         
         # Формируем имя: name → IP → MAC
         device_name = self._get_device_name()
-        
-        # name для отображения
         self._attr_name = device_name
         
-        # unique_id и entity_id на основе имени
+        # unique_id: safe_name + 4 символа MAC + pihole
         safe_name = self._sanitize_for_entity_id(device_name)
-        self._attr_unique_id = f"{DOMAIN}_{safe_name}"
+        mac_suffix = mac.replace(":", "").replace("-", "").lower()[-4:]  # последние 4 символа
+        self._attr_unique_id = f"{safe_name}_{mac_suffix}_pihole"
         
-        _LOGGER.debug(f"Tracker created: MAC={mac}, name={device_name}, unique_id={self._attr_unique_id}")
+        _LOGGER.debug(f"Tracker: MAC={mac}, name={device_name}, unique_id={self._attr_unique_id}")
 
     @property
     def is_connected(self) -> bool:
