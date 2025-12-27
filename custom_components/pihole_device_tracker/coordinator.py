@@ -17,22 +17,22 @@ _LOGGER = logging.getLogger(__name__)
 
 class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
     """Coordinator for Pi-hole v6 with authentication."""
-    
+
     def __init__(
         self, 
         hass: HomeAssistant, 
         host: str, 
-        password: str,  # ← НОВОЕ
+        password: str,
         scan_interval: int
     ):
         self._host = host.rstrip("/")
-        self._password = password  # ← НОВОЕ
+        self._password = password
         self._session = async_get_clientsession(hass)
-        self._sid: Optional[str] = None  # ← НОВОЕ: session ID
+        self._sid: Optional[str] = None  # session ID
         
         super().__init__(
-            hass, 
-            _LOGGER, 
+            hass,
+            _LOGGER,
             name="Pi-hole Device Tracker", 
             update_interval=timedelta(seconds=scan_interval)
         )
@@ -75,7 +75,7 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
         devices_url = f"{self._host}{DEVICES_ENDPOINT}"
         
         # Add authentication header
-        headers = {"X-FTL-SID": self._sid}  # ← НОВОЕ
+        headers = {"X-FTL-SID": self._sid}
         
         try:
             async with self._session.get(leases_url, headers=headers, timeout=10) as resp:
