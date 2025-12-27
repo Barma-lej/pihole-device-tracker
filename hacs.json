@@ -4,5 +4,11 @@
   "documentation": "https://github.com/Barma-lej/pihole-device-tracker",
   "issue_tracker": "https://github.com/Barma-lej/pihole-device-tracker/issues",
   "requirements": ["aiohttp>=3.9.0"],
-  "content_in_root": false
+  "content_in_root": false,
+  "domain": ["device_tracker"],
+  "codeowners": [
+    "@Barma-lej"
+  ],
+  "iot_class": "Local Polling",
+  "icon": "mdi:pi-hole"
 }
