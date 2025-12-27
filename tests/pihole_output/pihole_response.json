@@ -1,0 +1,2394 @@
+{
+  "timestamp": "2025-12-27T15:15:17.941868",
+  "host": "192.168.8.5",
+  "auth": {
+    "status": 200,
+    "url": "http://192.168.8.5/api/auth",
+    "payload": {
+      "password": "1Dthjzbrf-2"
+    },
+    "response": {
+      "session": {
+        "valid": true,
+        "totp": false,
+        "sid": "FloZXadKfkbANpaNB7bQIA=",
+        "csrf": "d52SwZsGQ5jXpblP0Oz5CA=",
+        "validity": 1800,
+        "message": "password correct"
+      },
+      "took": 1.097827672958374
+    },
+    "sid": "FloZXadKfkbANpaNB7bQIA="
+  },
+  "devices": {
+    "url": "http://192.168.8.5/api/network/devices?max_devices=999&max_addresses=24",
+    "headers": {
+      "X-FTL-SID": "FloZXadKfkbANpaN..."
+    },
+    "status": 200,
+    "response": {
+      "devices": [
+        {
+          "id": 1,
+          "hwaddr": "1c:69:7a:63:f7:b3",
+          "interface": "eth0",
+          "firstSeen": 1759569207,
+          "lastQuery": 1766844900,
+          "numQueries": 353250,
+          "macVendor": "EliteGroup Computer Systems Co., LTD",
+          "ips": [
+            {
+              "ip": "192.168.8.254",
+              "name": "schick-nuc",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "hwaddr": "36:a9:96:19:16:4b",
+          "interface": "eth0",
+          "firstSeen": 1759569207,
+          "lastQuery": 1766844898,
+          "numQueries": 106802,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.92",
+              "name": "leo-a54.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "hwaddr": "c8:7f:54:5c:c5:04",
+          "interface": "eth0",
+          "firstSeen": 1759569207,
+          "lastQuery": 1766844894,
+          "numQueries": 967330,
+          "macVendor": "ASUSTek COMPUTER INC.",
+          "ips": [
+            {
+              "ip": "192.168.8.150",
+              "name": "Beastly-V2.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "hwaddr": "ac:ba:c0:e3:48:86",
+          "interface": "eth0",
+          "firstSeen": 1759569228,
+          "lastQuery": 1766844894,
+          "numQueries": 21458,
+          "macVendor": "Intertech Services AG",
+          "ips": [
+            {
+              "ip": "192.168.8.67",
+              "name": "yandex-station-midi-ec5k.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 97,
+          "hwaddr": "9c:5c:8e:87:c8:03",
+          "interface": "eth0",
+          "firstSeen": 1762454980,
+          "lastQuery": 1766844885,
+          "numQueries": 140592,
+          "macVendor": "ASUSTek COMPUTER INC.",
+          "ips": [
+            {
+              "ip": "192.168.8.20",
+              "name": "anatolij-pc.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "hwaddr": "b4:22:00:44:99:bd",
+          "interface": "eth0",
+          "firstSeen": 1759569207,
+          "lastQuery": 1766844864,
+          "numQueries": 158764,
+          "macVendor": "Brother Industries, LTD.",
+          "ips": [
+            {
+              "ip": "192.168.8.201",
+              "name": "brnb422004499bd.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 27,
+          "hwaddr": "00:0c:29:d9:da:2b",
+          "interface": "eth0",
+          "firstSeen": 1759571349,
+          "lastQuery": 1766844864,
+          "numQueries": 170468,
+          "macVendor": "VMware, Inc.",
+          "ips": [
+            {
+              "ip": "192.168.8.252",
+              "name": "haos",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            },
+            {
+              "ip": "fe80::fe6e:aa5a:80f2:75b",
+              "name": null,
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            },
+            {
+              "ip": "fe80::d190:979:67c2:3178",
+              "name": null,
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 9,
+          "hwaddr": "68:3a:48:5b:de:3e",
+          "interface": "eth0",
+          "firstSeen": 1759569207,
+          "lastQuery": 1766844853,
+          "numQueries": 127293,
+          "macVendor": "SAMJIN Co., Ltd.",
+          "ips": [
+            {
+              "ip": "192.168.8.90",
+              "name": "samsung-washer-sergej.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "hwaddr": "36:a7:36:1e:34:0a",
+          "interface": "eth0",
+          "firstSeen": 1759569240,
+          "lastQuery": 1766844843,
+          "numQueries": 559399,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.95",
+              "name": "iphone-von-vitali.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 29,
+          "hwaddr": "14:bb:6e:31:9e:44",
+          "interface": "eth0",
+          "firstSeen": 1759572025,
+          "lastQuery": 1766844811,
+          "numQueries": 121156,
+          "macVendor": "Samsung Electronics Co.,Ltd",
+          "ips": [
+            {
+              "ip": "192.168.8.86",
+              "name": "samsung-tv-leo2.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            },
+            {
+              "ip": "169.254.181.22",
+              "name": null,
+              "lastSeen": 1763601420,
+              "nameUpdated": 1763601420
+            },
+            {
+              "ip": "169.254.32.4",
+              "name": null,
+              "lastSeen": 1760175600,
+              "nameUpdated": 1760175600
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "hwaddr": "24:5e:be:0e:a0:e2",
+          "interface": "eth0",
+          "firstSeen": 1759569207,
+          "lastQuery": 1766844593,
+          "numQueries": 60186,
+          "macVendor": "QNAP Systems, Inc.",
+          "ips": [
+            {
+              "ip": "192.168.8.10",
+              "name": "nas",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 106,
+          "hwaddr": "98:17:3c:e0:eb:76",
+          "interface": "eth0",
+          "firstSeen": 1763735390,
+          "lastQuery": 1766844564,
+          "numQueries": 1109,
+          "macVendor": "Private",
+          "ips": [
+            {
+              "ip": "192.168.8.122",
+              "name": "wohnlicht.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            },
+            {
+              "ip": "192.168.9.102",
+              "name": "wohnlicht.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 114,
+          "hwaddr": "82:9e:74:09:ce:cf",
+          "interface": "eth0",
+          "firstSeen": 1766844006,
+          "lastQuery": 1766844429,
+          "numQueries": 105,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.118",
+              "name": null,
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "hwaddr": "00:00:00:00:00:00",
+          "interface": "lo",
+          "firstSeen": 1759569209,
+          "lastQuery": 1766844007,
+          "numQueries": 66395,
+          "macVendor": "virtual interface",
+          "ips": [
+            {
+              "ip": "0.0.0.0",
+              "name": null,
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            },
+            {
+              "ip": "ff02::16",
+              "name": null,
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            },
+            {
+              "ip": "::1",
+              "name": null,
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            },
+            {
+              "ip": "127.0.0.1",
+              "name": "localhost",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 26,
+          "hwaddr": "c8:2b:96:10:a3:6d",
+          "interface": "eth0",
+          "firstSeen": 1759571033,
+          "lastQuery": 1766843973,
+          "numQueries": 1107,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.156",
+              "name": "shellyswitch25-10a36d.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 40,
+          "hwaddr": "36:00:67:c5:81:32",
+          "interface": "eth0",
+          "firstSeen": 1759576203,
+          "lastQuery": 1766843876,
+          "numQueries": 23667,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.33",
+              "name": "ns25.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 37,
+          "hwaddr": "68:39:43:fb:59:02",
+          "interface": "eth0",
+          "firstSeen": 1759574520,
+          "lastQuery": 1766843849,
+          "numQueries": 2663,
+          "macVendor": "ittim",
+          "ips": [
+            {
+              "ip": "192.168.8.209",
+              "name": "reolink-rlc-510wa-w1.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 24,
+          "hwaddr": "02:7b:27:ab:bc:a5",
+          "interface": "eth0",
+          "firstSeen": 1759569618,
+          "lastQuery": 1766843336,
+          "numQueries": 47775,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.25",
+              "name": "as25.local",
+              "lastSeen": 1766844360,
+              "nameUpdated": 1766844360
+            }
+          ]
+        },
+        {
+          "id": 25,
+          "hwaddr": "b8:27:eb:18:08:6d",
+          "interface": "eth0",
+          "firstSeen": 1759570273,
+          "lastQuery": 1766843231,
+          "numQueries": 24463,
+          "macVendor": "Raspberry Pi Foundation",
+          "ips": [
+            {
+              "ip": "192.168.8.18",
+              "name": "3dprinter",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 41,
+          "hwaddr": "5c:c3:36:0b:d7:ed",
+          "interface": "eth0",
+          "firstSeen": 1759576574,
+          "lastQuery": 1766843173,
+          "numQueries": 2444,
+          "macVendor": "ittim",
+          "ips": [
+            {
+              "ip": "192.168.8.207",
+              "name": "reolink-rlc-510wa-w2.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 21,
+          "hwaddr": "60:01:94:84:db:6f",
+          "interface": "eth0",
+          "firstSeen": 1759569408,
+          "lastQuery": 1766842609,
+          "numQueries": 1909,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.179",
+              "name": "sonoffbnsz01.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 31,
+          "hwaddr": "80:7d:3a:32:37:cf",
+          "interface": "eth0",
+          "firstSeen": 1759573008,
+          "lastQuery": 1766842369,
+          "numQueries": 1698,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.183",
+              "name": "sonoffpowr2_04.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "hwaddr": "60:01:94:b2:a4:7d",
+          "interface": "eth0",
+          "firstSeen": 1759569283,
+          "lastQuery": 1766842302,
+          "numQueries": 1292,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.170",
+              "name": "sonoffrfbridger2_01.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 30,
+          "hwaddr": "98:f4:ab:f3:7a:8c",
+          "interface": "eth0",
+          "firstSeen": 1759572768,
+          "lastQuery": 1766841538,
+          "numQueries": 1096,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.155",
+              "name": "shellyswitch25-f37a8c.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 51,
+          "hwaddr": "c8:0e:14:c7:8d:22",
+          "interface": "eth0",
+          "firstSeen": 1759591403,
+          "lastQuery": 1766841439,
+          "numQueries": 442,
+          "macVendor": "AVM Audiovisuelles Marketing und Computersysteme GmbH",
+          "ips": [
+            {
+              "ip": "192.168.8.3",
+              "name": "fritz-larissa-2.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 23,
+          "hwaddr": "c8:2b:96:10:ea:a4",
+          "interface": "eth0",
+          "firstSeen": 1759569655,
+          "lastQuery": 1766839336,
+          "numQueries": 1098,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.153",
+              "name": "shellyswitch25-10eaa4.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 112,
+          "hwaddr": "c8:2b:96:10:c7:c3",
+          "interface": "eth0",
+          "firstSeen": 1766003253,
+          "lastQuery": 1766838312,
+          "numQueries": 132,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.157",
+              "name": "shellyswitch25-10c7c3.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 38,
+          "hwaddr": "98:f4:ab:f3:7b:28",
+          "interface": "eth0",
+          "firstSeen": 1759574841,
+          "lastQuery": 1766837412,
+          "numQueries": 1136,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.154",
+              "name": "shellyswitch25-f37b28.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "hwaddr": "d8:cb:8a:15:4e:f1",
+          "interface": "eth0",
+          "firstSeen": 1759569207,
+          "lastQuery": 1766834317,
+          "numQueries": 247271,
+          "macVendor": "Micro-Star INTL CO., LTD.",
+          "ips": [
+            {
+              "ip": "192.168.8.80",
+              "name": "meister-pc.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 50,
+          "hwaddr": "58:bf:25:17:5e:d4",
+          "interface": "eth0",
+          "firstSeen": 1759585080,
+          "lastQuery": 1766832990,
+          "numQueries": 365,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.130",
+              "name": "home-assistant-glow.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 67,
+          "hwaddr": "56:f4:15:f0:e5:36",
+          "interface": "eth0",
+          "firstSeen": 1759857376,
+          "lastQuery": 1766832057,
+          "numQueries": 1476,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.190",
+              "name": "Galaxy-A54-5G.local",
+              "lastSeen": 1766832060,
+              "nameUpdated": 1766832060
+            }
+          ]
+        },
+        {
+          "id": 105,
+          "hwaddr": "ec:71:db:8c:ab:4c",
+          "interface": "eth0",
+          "firstSeen": 1763666627,
+          "lastQuery": 1766829723,
+          "numQueries": 256,
+          "macVendor": "Reolink Innovation Limited",
+          "ips": [
+            {
+              "ip": "192.168.8.120",
+              "name": "E1.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            },
+            {
+              "ip": "192.168.8.205",
+              "name": "reolink-e1-zoom-3.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 34,
+          "hwaddr": "ac:15:a2:44:a4:fc",
+          "interface": "eth0",
+          "firstSeen": 1759573539,
+          "lastQuery": 1766817223,
+          "numQueries": 54208,
+          "macVendor": "TP-Link Systems Inc",
+          "ips": [
+            {
+              "ip": "192.168.9.190",
+              "name": "deco-x55-1.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 53,
+          "hwaddr": "40:31:3c:ad:34:6c",
+          "interface": "eth0",
+          "firstSeen": 1759615012,
+          "lastQuery": 1766813360,
+          "numQueries": 2317,
+          "macVendor": "XIAOMI Electronics,CO.,LTD",
+          "ips": [
+            {
+              "ip": "192.168.8.212",
+              "name": "roborocks50.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 54,
+          "hwaddr": "34:b7:da:8d:b2:54",
+          "interface": "eth0",
+          "firstSeen": 1759641892,
+          "lastQuery": 1766812855,
+          "numQueries": 106,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.151",
+              "name": "shelly1pmminig3-34b7da8db254.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 42,
+          "hwaddr": "50:ec:50:1a:2e:b7",
+          "interface": "eth0",
+          "firstSeen": 1759576932,
+          "lastQuery": 1766811514,
+          "numQueries": 954,
+          "macVendor": "Beijing Xiaomi Mobile Software Co., Ltd",
+          "ips": [
+            {
+              "ip": "192.168.8.215",
+              "name": "roborocks5max.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 61,
+          "hwaddr": "1c:90:ff:a5:c3:b7",
+          "interface": "eth0",
+          "firstSeen": 1759748113,
+          "lastQuery": 1766810030,
+          "numQueries": 70,
+          "macVendor": "Tuya Smart Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.213",
+              "name": "tuyaplug4.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "hwaddr": "5c:c3:36:2e:38:a1",
+          "interface": "eth0",
+          "firstSeen": 1759569216,
+          "lastQuery": 1766797260,
+          "numQueries": 464,
+          "macVendor": "ittim",
+          "ips": [
+            {
+              "ip": "192.168.8.210",
+              "name": "cam1",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "hwaddr": "1c:86:9a:09:59:94",
+          "interface": "eth0",
+          "firstSeen": 1759569619,
+          "lastQuery": 1766785984,
+          "numQueries": 79556,
+          "macVendor": "Samsung Electronics Co.,Ltd",
+          "ips": [
+            {
+              "ip": "192.168.8.14",
+              "name": "samsung-tv-gq75qn92catxzg.local",
+              "lastSeen": 1766786280,
+              "nameUpdated": 1766786280
+            }
+          ]
+        },
+        {
+          "id": 43,
+          "hwaddr": "c8:12:0b:a9:de:9f",
+          "interface": "eth0",
+          "firstSeen": 1759577575,
+          "lastQuery": 1766783143,
+          "numQueries": 8199,
+          "macVendor": "Samsung Electronics Co.,Ltd",
+          "ips": [
+            {
+              "ip": "192.168.8.19",
+              "name": "samsung_hw-q935gc.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 62,
+          "hwaddr": "28:6d:97:46:58:0e",
+          "interface": "eth0",
+          "firstSeen": 1759754846,
+          "lastQuery": 1766776973,
+          "numQueries": 293,
+          "macVendor": "SAMJIN Co., Ltd.",
+          "ips": [
+            {
+              "ip": "192.168.8.240",
+              "name": "samsung_trockner.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 80,
+          "hwaddr": "1c:90:ff:a5:57:e3",
+          "interface": "eth0",
+          "firstSeen": 1760394061,
+          "lastQuery": 1766776864,
+          "numQueries": 128,
+          "macVendor": "Tuya Smart Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.212",
+              "name": "tuyaplug3.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 107,
+          "hwaddr": "98:17:3c:c9:ea:2a",
+          "interface": "eth0",
+          "firstSeen": 1763735786,
+          "lastQuery": 1766775853,
+          "numQueries": 1034,
+          "macVendor": "Private",
+          "ips": [
+            {
+              "ip": "192.168.9.101",
+              "name": "essecke.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            },
+            {
+              "ip": "192.168.8.132",
+              "name": "essecke.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 60,
+          "hwaddr": "aa:e7:11:a1:1e:a5",
+          "interface": "eth0",
+          "firstSeen": 1759740816,
+          "lastQuery": 1766762808,
+          "numQueries": 11791,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.168",
+              "name": "Galaxy-A54-5G.local",
+              "lastSeen": 1766762940,
+              "nameUpdated": 1766762940
+            }
+          ]
+        },
+        {
+          "id": 15,
+          "hwaddr": "a8:1e:84:05:da:27",
+          "interface": "eth0",
+          "firstSeen": 1759569255,
+          "lastQuery": 1766755879,
+          "numQueries": 54177,
+          "macVendor": "Quanta Computer Inc.",
+          "ips": [
+            {
+              "ip": "192.168.8.176",
+              "name": "Schick-NB-Leo.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 49,
+          "hwaddr": "1c:90:ff:a5:47:4d",
+          "interface": "eth0",
+          "firstSeen": 1759583432,
+          "lastQuery": 1766746546,
+          "numQueries": 214,
+          "macVendor": "Tuya Smart Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.210",
+              "name": "tuyaplug1.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 65,
+          "hwaddr": "f0:57:a6:f9:73:92",
+          "interface": "eth0",
+          "firstSeen": 1759782993,
+          "lastQuery": 1766713018,
+          "numQueries": 27648,
+          "macVendor": "Intel Corporate",
+          "ips": [
+            {
+              "ip": "192.168.8.189",
+              "name": "beastly-NB.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 113,
+          "hwaddr": "7e:9f:10:fa:4f:88",
+          "interface": "eth0",
+          "firstSeen": 1766657555,
+          "lastQuery": 1766696820,
+          "numQueries": 323,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.172",
+              "name": null,
+              "lastSeen": 1766696820,
+              "nameUpdated": 1766696820
+            }
+          ]
+        },
+        {
+          "id": 68,
+          "hwaddr": "ba:86:6d:ee:d3:68",
+          "interface": "eth0",
+          "firstSeen": 1759916141,
+          "lastQuery": 1766696816,
+          "numQueries": 15294,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.55",
+              "name": "vs25p.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 47,
+          "hwaddr": "b4:ec:02:94:8a:d0",
+          "interface": "eth0",
+          "firstSeen": 1759580386,
+          "lastQuery": 1766696276,
+          "numQueries": 514,
+          "macVendor": "Alpsalpine Co,.Ltd",
+          "ips": [
+            {
+              "ip": "192.168.8.70",
+              "name": "vw_wlan_1505.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 45,
+          "hwaddr": "86:f1:5b:84:3b:a9",
+          "interface": "eth0",
+          "firstSeen": 1759578265,
+          "lastQuery": 1766586810,
+          "numQueries": 565,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.151",
+              "name": null,
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 110,
+          "hwaddr": "58:bf:25:93:31:d0",
+          "interface": "eth0",
+          "firstSeen": 1764462910,
+          "lastQuery": 1766523654,
+          "numQueries": 6,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.128",
+              "name": "wled-1.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 55,
+          "hwaddr": "08:21:ef:9f:1d:80",
+          "interface": "eth0",
+          "firstSeen": 1759653867,
+          "lastQuery": 1766382141,
+          "numQueries": 4066,
+          "macVendor": "Samsung Electronics Co.,Ltd",
+          "ips": [
+            {
+              "ip": "192.168.8.85",
+              "name": "samsung-tab-e.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 58,
+          "hwaddr": "00:08:9b:bd:b8:fe",
+          "interface": "eth0",
+          "firstSeen": 1759715137,
+          "lastQuery": 1766372738,
+          "numQueries": 445,
+          "macVendor": "ICP Electronics Inc.",
+          "ips": [
+            {
+              "ip": "192.168.8.13",
+              "name": "qnap119.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 108,
+          "hwaddr": "84:f3:eb:4a:8d:e4",
+          "interface": "eth0",
+          "firstSeen": 1763969115,
+          "lastQuery": 1766345716,
+          "numQueries": 298,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.180",
+              "name": "sonoffpowr2_01.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 84,
+          "hwaddr": "14:d1:69:c6:5a:7e",
+          "interface": "eth0",
+          "firstSeen": 1760973030,
+          "lastQuery": 1766283007,
+          "numQueries": 21359,
+          "macVendor": "Huawei Technologies Co.,Ltd",
+          "ips": [
+            {
+              "ip": "192.168.8.96",
+              "name": "vitali-huawei-p20-lite.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 71,
+          "hwaddr": "04:cf:8c:78:83:77",
+          "interface": "eth0",
+          "firstSeen": 1759948870,
+          "lastQuery": 1766244437,
+          "numQueries": 19,
+          "macVendor": "XIAOMI Electronics,CO.,LTD",
+          "ips": [
+            {
+              "ip": "192.168.8.239",
+              "name": "yeelight-light-ceiling1_mibt13035629.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            },
+            {
+              "ip": "192.168.9.100",
+              "name": "yeelight-light-ceiling1_mibt13035629.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 96,
+          "hwaddr": "1c:90:ff:a5:9c:32",
+          "interface": "eth0",
+          "firstSeen": 1762292418,
+          "lastQuery": 1766230731,
+          "numQueries": 35,
+          "macVendor": "Tuya Smart Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.211",
+              "name": "tuyaplug2.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 89,
+          "hwaddr": "cc:f4:11:ab:8e:bb",
+          "interface": "eth0",
+          "firstSeen": 1761492455,
+          "lastQuery": 1766180230,
+          "numQueries": 44,
+          "macVendor": "Google, Inc.",
+          "ips": [
+            {
+              "ip": "192.168.8.61",
+              "name": "google-nest-mini.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "hwaddr": "ee:83:08:ae:5f:df",
+          "interface": "eth0",
+          "firstSeen": 1759569207,
+          "lastQuery": 1766116314,
+          "numQueries": 389316,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.94",
+              "name": "iphone-von-larissa.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 46,
+          "hwaddr": "22:db:1c:a2:eb:60",
+          "interface": "eth0",
+          "firstSeen": 1759580360,
+          "lastQuery": 1766116261,
+          "numQueries": 227112,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.93",
+              "name": "s23-von-sergej.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 28,
+          "hwaddr": "c8:2b:96:10:d3:15",
+          "interface": "eth0",
+          "firstSeen": 1759571984,
+          "lastQuery": 1766013261,
+          "numQueries": 1041,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.152",
+              "name": "shellyswitch25-10d315.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 111,
+          "hwaddr": "ac:15:a2:44:a3:ec",
+          "interface": "eth0",
+          "firstSeen": 1765995334,
+          "lastQuery": 1766003746,
+          "numQueries": 346,
+          "macVendor": "TP-Link Systems Inc",
+          "ips": [
+            {
+              "ip": "192.168.9.194",
+              "name": "deco-x55-3.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 101,
+          "hwaddr": "ac:15:a2:44:a4:3c",
+          "interface": "eth0",
+          "firstSeen": 1763221287,
+          "lastQuery": 1766003729,
+          "numQueries": 293,
+          "macVendor": "TP-Link Systems Inc",
+          "ips": [
+            {
+              "ip": "192.168.9.192",
+              "name": "deco-x55-2.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 92,
+          "hwaddr": "30:fd:38:a5:e6:ab",
+          "interface": "eth0",
+          "firstSeen": 1761920071,
+          "lastQuery": 1766003720,
+          "numQueries": 140,
+          "macVendor": "Google, Inc.",
+          "ips": [
+            {
+              "ip": "192.168.8.63",
+              "name": "google-home-mini-flur.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 72,
+          "hwaddr": "50:8b:b9:32:09:f8",
+          "interface": "eth0",
+          "firstSeen": 1759982831,
+          "lastQuery": 1766001665,
+          "numQueries": 35,
+          "macVendor": "Tuya Smart Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.217",
+              "name": "tuyaplug8.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 91,
+          "hwaddr": "50:8b:b9:34:92:b5",
+          "interface": "eth0",
+          "firstSeen": 1761859936,
+          "lastQuery": 1766000714,
+          "numQueries": 65,
+          "macVendor": "Tuya Smart Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.218",
+              "name": "tuyaplug9.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 70,
+          "hwaddr": "02:07:da:73:90:88",
+          "interface": "eth0",
+          "firstSeen": 1759943421,
+          "lastQuery": 1765999634,
+          "numQueries": 456,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.199",
+              "name": "A55-von-Viktor.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            },
+            {
+              "ip": "192.168.8.198",
+              "name": "A55-von-Viktor.local",
+              "lastSeen": 1765990920,
+              "nameUpdated": 1765990920
+            }
+          ]
+        },
+        {
+          "id": 87,
+          "hwaddr": "30:13:8b:f0:17:8d",
+          "interface": "eth0",
+          "firstSeen": 1761196238,
+          "lastQuery": 1765984065,
+          "numQueries": 76220,
+          "macVendor": "HP Inc.",
+          "ips": [
+            {
+              "ip": "192.168.8.194",
+              "name": "AEJ-1179.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 63,
+          "hwaddr": "a8:b1:3b:5f:d9:df",
+          "interface": "eth0",
+          "firstSeen": 1759763737,
+          "lastQuery": 1765967772,
+          "numQueries": 40640,
+          "macVendor": "HP Inc.",
+          "ips": [
+            {
+              "ip": "192.168.8.98",
+              "name": "dehajwn4951788.prg-dc.dhl.com",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 36,
+          "hwaddr": "2c:dc:ad:89:f8:ef",
+          "interface": "eth0",
+          "firstSeen": 1759574212,
+          "lastQuery": 1765944967,
+          "numQueries": 8,
+          "macVendor": "Wistron Neweb Corporation",
+          "ips": [
+            {
+              "ip": "192.168.8.119",
+              "name": "VW_WLAN_2077.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 88,
+          "hwaddr": "a0:d3:c1:de:b5:13",
+          "interface": "eth0",
+          "firstSeen": 1761470368,
+          "lastQuery": 1765870755,
+          "numQueries": 43,
+          "macVendor": "Hewlett Packard",
+          "ips": [
+            {
+              "ip": "192.168.8.114",
+              "name": "HPD2DCA9.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 66,
+          "hwaddr": "2c:7b:a0:aa:00:0f",
+          "interface": "eth0",
+          "firstSeen": 1759813672,
+          "lastQuery": 1765865006,
+          "numQueries": 86954,
+          "macVendor": "Intel Corporate",
+          "ips": [
+            {
+              "ip": "192.168.8.177",
+              "name": "AEJ-1179.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 86,
+          "hwaddr": "b6:2e:c4:78:ef:ee",
+          "interface": "eth0",
+          "firstSeen": 1761058816,
+          "lastQuery": 1765820977,
+          "numQueries": 131,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.191",
+              "name": "S23-von-Olga.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 82,
+          "hwaddr": "1c:90:ff:a5:d0:5c",
+          "interface": "eth0",
+          "firstSeen": 1760615428,
+          "lastQuery": 1765335068,
+          "numQueries": 57,
+          "macVendor": "Tuya Smart Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.214",
+              "name": "tuyaplug5.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 95,
+          "hwaddr": "a8:80:55:ee:7f:c5",
+          "interface": "eth0",
+          "firstSeen": 1762288054,
+          "lastQuery": 1765335057,
+          "numQueries": 20,
+          "macVendor": "Tuya Smart Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.216",
+              "name": "tuyaplug7.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 19,
+          "hwaddr": "b6:e3:a4:ce:0d:a3",
+          "interface": "eth0",
+          "firstSeen": 1759569340,
+          "lastQuery": 1765288997,
+          "numQueries": 404,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.185",
+              "name": null,
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 83,
+          "hwaddr": "ca:c2:23:66:7b:11",
+          "interface": "eth0",
+          "firstSeen": 1760886938,
+          "lastQuery": 1765120792,
+          "numQueries": 1296,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.97",
+              "name": "s9-nkarsten.aej-online.de",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 79,
+          "hwaddr": "60:01:94:ca:ab:e3",
+          "interface": "eth0",
+          "firstSeen": 1760250012,
+          "lastQuery": 1765117872,
+          "numQueries": 1288,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.178",
+              "name": "sonoff4chpror2.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 77,
+          "hwaddr": "60:01:94:16:6c:e6",
+          "interface": "eth0",
+          "firstSeen": 1760120542,
+          "lastQuery": 1764959841,
+          "numQueries": 790,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.120",
+              "name": "esp_inch_166ce6.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 85,
+          "hwaddr": "2a:94:f6:2f:a7:77",
+          "interface": "eth0",
+          "firstSeen": 1761047073,
+          "lastQuery": 1764958621,
+          "numQueries": 2823,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.163",
+              "name": "iPhone.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 20,
+          "hwaddr": "80:7d:3a:32:3d:07",
+          "interface": "eth0",
+          "firstSeen": 1759569324,
+          "lastQuery": 1764732445,
+          "numQueries": 1271,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.182",
+              "name": "sonoffpowr2_03.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 81,
+          "hwaddr": "b0:fc:36:ee:4c:0b",
+          "interface": "eth0",
+          "firstSeen": 1760451470,
+          "lastQuery": 1764520767,
+          "numQueries": 10294,
+          "macVendor": "CyberTAN Technology Inc.",
+          "ips": [
+            {
+              "ip": "192.168.8.123",
+              "name": "Sergej-PC.local",
+              "lastSeen": 1765549080,
+              "nameUpdated": 1765549080
+            }
+          ]
+        },
+        {
+          "id": 109,
+          "hwaddr": "22:ea:05:5e:af:fb",
+          "interface": "eth0",
+          "firstSeen": 1764355014,
+          "lastQuery": 1764366967,
+          "numQueries": 2408,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.186",
+              "name": null,
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 64,
+          "hwaddr": "88:d8:2e:0c:05:6c",
+          "interface": "eth0",
+          "firstSeen": 1759763939,
+          "lastQuery": 1764153804,
+          "numQueries": 1751,
+          "macVendor": "Intel Corporate",
+          "ips": [
+            {
+              "ip": "192.168.8.165",
+              "name": null,
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 32,
+          "hwaddr": "d2:40:37:7c:a5:8d",
+          "interface": "eth0",
+          "firstSeen": 1759573518,
+          "lastQuery": 1763964798,
+          "numQueries": 2586,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.127",
+              "name": "iPhone.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 48,
+          "hwaddr": "68:39:43:f8:14:5f",
+          "interface": "eth0",
+          "firstSeen": 1759583267,
+          "lastQuery": 1763663507,
+          "numQueries": 13543,
+          "macVendor": "ittim",
+          "ips": [
+            {
+              "ip": "192.168.8.211",
+              "name": "cam2",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 90,
+          "hwaddr": "e4:f0:42:26:60:4f",
+          "interface": "eth0",
+          "firstSeen": 1761585727,
+          "lastQuery": 1763652493,
+          "numQueries": 8285,
+          "macVendor": "Google, Inc.",
+          "ips": [
+            {
+              "ip": "192.168.8.62",
+              "name": "google-home-mini.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 39,
+          "hwaddr": "98:d8:63:57:dc:f8",
+          "interface": "eth0",
+          "firstSeen": 1759575600,
+          "lastQuery": 1763519511,
+          "numQueries": 378,
+          "macVendor": "Shanghai High-Flying Electronics Technology Co., Ltd",
+          "ips": [
+            {
+              "ip": "192.168.8.216",
+              "name": "worx-landroid-m500-sergej.local",
+              "lastSeen": 1763606340,
+              "nameUpdated": 1763606340
+            }
+          ]
+        },
+        {
+          "id": 18,
+          "hwaddr": "ce:c9:5a:13:88:01",
+          "interface": "eth0",
+          "firstSeen": 1759569357,
+          "lastQuery": 1763314855,
+          "numQueries": 2549,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.41",
+              "name": "ks25.local",
+              "lastSeen": 1763601420,
+              "nameUpdated": 1763601420
+            }
+          ]
+        },
+        {
+          "id": 98,
+          "hwaddr": "76:cb:02:c9:0d:be",
+          "interface": "eth0",
+          "firstSeen": 1762604707,
+          "lastQuery": 1763314657,
+          "numQueries": 5551,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.161",
+              "name": null,
+              "lastSeen": 1763601420,
+              "nameUpdated": 1763601420
+            }
+          ]
+        },
+        {
+          "id": 103,
+          "hwaddr": "32:b2:68:c5:46:71",
+          "interface": "eth0",
+          "firstSeen": 1763302564,
+          "lastQuery": 1763314543,
+          "numQueries": 1825,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.196",
+              "name": "iPhone.local",
+              "lastSeen": 1763314620,
+              "nameUpdated": 1763314620
+            }
+          ]
+        },
+        {
+          "id": 104,
+          "hwaddr": "36:c5:24:8b:a1:b1",
+          "interface": "eth0",
+          "firstSeen": 1763311652,
+          "lastQuery": 1763313853,
+          "numQueries": 100,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.46",
+              "name": "ks25p.local",
+              "lastSeen": 1763601420,
+              "nameUpdated": 1763601420
+            }
+          ]
+        },
+        {
+          "id": 102,
+          "hwaddr": "ae:7d:e8:1e:05:c7",
+          "interface": "eth0",
+          "firstSeen": 1763302612,
+          "lastQuery": 1763302612,
+          "numQueries": 4,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.192",
+              "name": "Watch.local",
+              "lastSeen": 1763601420,
+              "nameUpdated": 1763601420
+            }
+          ]
+        },
+        {
+          "id": 52,
+          "hwaddr": "98:d8:63:34:3c:ec",
+          "interface": "eth0",
+          "firstSeen": 1759603567,
+          "lastQuery": 1763221290,
+          "numQueries": 164,
+          "macVendor": "Shanghai High-Flying Electronics Technology Co., Ltd",
+          "ips": [
+            {
+              "ip": "192.168.8.213",
+              "name": "worx-landroid-m500-wr141e.local",
+              "lastSeen": 1763601420,
+              "nameUpdated": 1763601420
+            }
+          ]
+        },
+        {
+          "id": 17,
+          "hwaddr": "84:f3:eb:4a:85:d1",
+          "interface": "eth0",
+          "firstSeen": 1759569246,
+          "lastQuery": 1763220729,
+          "numQueries": 666,
+          "macVendor": "Espressif Inc.",
+          "ips": [
+            {
+              "ip": "192.168.9.181",
+              "name": "sonoffpowr2_02.local",
+              "lastSeen": 1766844900,
+              "nameUpdated": 1766844900
+            }
+          ]
+        },
+        {
+          "id": 59,
+          "hwaddr": "00:c2:c6:54:d2:e2",
+          "interface": "eth0",
+          "firstSeen": 1759736776,
+          "lastQuery": 1763219715,
+          "numQueries": 2644,
+          "macVendor": "Intel Corporate",
+          "ips": [
+            {
+              "ip": "192.168.8.152",
+              "name": "beastlyNB-PC.local",
+              "lastSeen": 1763601420,
+              "nameUpdated": 1763601420
+            }
+          ]
+        },
+        {
+          "id": 100,
+          "hwaddr": "9e:66:1c:37:71:5b",
+          "interface": "eth0",
+          "firstSeen": 1763062681,
+          "lastQuery": 1763067486,
+          "numQueries": 230,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.71",
+              "name": "djirc2.local",
+              "lastSeen": 1763601420,
+              "nameUpdated": 1763601420
+            }
+          ]
+        },
+        {
+          "id": 99,
+          "hwaddr": "6a:02:38:2b:eb:6b",
+          "interface": "eth0",
+          "firstSeen": 1762687650,
+          "lastQuery": 1762688767,
+          "numQueries": 7,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.171",
+              "name": "Watch.local",
+              "lastSeen": 1763601420,
+              "nameUpdated": 1763601420
+            }
+          ]
+        },
+        {
+          "id": 69,
+          "hwaddr": "68:c6:ac:19:cc:79",
+          "interface": "eth0",
+          "firstSeen": 1759916548,
+          "lastQuery": 1762367782,
+          "numQueries": 34268,
+          "macVendor": "Intel Corporate",
+          "ips": [
+            {
+              "ip": "192.168.8.184",
+              "name": "DPN47439.local",
+              "lastSeen": 1763601420,
+              "nameUpdated": 1763601420
+            }
+          ]
+        },
+        {
+          "id": 33,
+          "hwaddr": "0a:ee:1f:ba:7e:89",
+          "interface": "eth0",
+          "firstSeen": 1759573545,
+          "lastQuery": 1762095179,
+          "numQueries": 824,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.182",
+              "name": "iPhone.local",
+              "lastSeen": 1762095180,
+              "nameUpdated": 1762095180
+            }
+          ]
+        },
+        {
+          "id": 93,
+          "hwaddr": "c6:ad:25:e0:2f:18",
+          "interface": "eth0",
+          "firstSeen": 1762091544,
+          "lastQuery": 1762095051,
+          "numQueries": 67,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.175",
+              "name": null,
+              "lastSeen": 1763601420,
+              "nameUpdated": 1763601420
+            }
+          ]
+        },
+        {
+          "id": 94,
+          "hwaddr": "ba:6e:20:ce:00:48",
+          "interface": "eth0",
+          "firstSeen": 1762091832,
+          "lastQuery": 1762091832,
+          "numQueries": 4,
+          "macVendor": "",
+          "ips": [
+            {
+              "ip": "192.168.8.130",
+              "name": "Watch.local",
+              "lastSeen": 1762095360,
+              "nameUpdated": 1762095360
+            }
+          ]
+        },
+        {
+          "id": 14,
+          "hwaddr": "b8:27:eb:79:f2:75",
+          "interface": "eth0",
+          "firstSeen": 1759569240,
+          "lastQuery": 0,
+          "numQueries": 0,
+          "macVendor": "Raspberry Pi Foundation",
+          "ips": [
+            {
+              "ip": "192.168.8.5",
+              "name": null,
+              "lastSeen": 1761547380,
+              "nameUpdated": 1761547380
+            },
+            {
+              "ip": "fe80::76b1:9cf1:1cbb:1e29",
+              "name": null,
+              "lastSeen": 1761547380,
+              "nameUpdated": 1761547380
+            }
+          ]
+        }
+      ],
+      "took": 0.011619091033935547
+    }
+  },
+  "dhcp_leases": {
+    "url": "http://192.168.8.5/api/dhcp/leases",
+    "status": 200,
+    "response": {
+      "leases": [
+        {
+          "expires": 1767448806,
+          "hwaddr": "82:9e:74:09:ce:cf",
+          "ip": "192.168.8.118",
+          "name": "*",
+          "clientid": "01:82:9e:74:09:ce:cf"
+        },
+        {
+          "expires": 1767436856,
+          "hwaddr": "56:f4:15:f0:e5:36",
+          "ip": "192.168.8.190",
+          "name": "Galaxy-A54-5G",
+          "clientid": "01:56:f4:15:f0:e5:36"
+        },
+        {
+          "expires": 1767200982,
+          "hwaddr": "98:17:3c:c9:ea:2a",
+          "ip": "192.168.9.101",
+          "name": "essecke",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767193748,
+          "hwaddr": "98:17:3c:e0:eb:76",
+          "ip": "192.168.9.102",
+          "name": "wohnlicht",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767448806,
+          "hwaddr": "f0:f5:bd:fc:0f:38",
+          "ip": "192.168.9.110",
+          "name": "steba-humidifier",
+          "clientid": "01:f0:f5:bd:fc:0f:38"
+        },
+        {
+          "expires": 1767433501,
+          "hwaddr": "9c:5c:8e:87:c8:03",
+          "ip": "192.168.8.20",
+          "name": "anatolij-pc",
+          "clientid": "01:9c:5c:8e:87:c8:03"
+        },
+        {
+          "expires": 1767366417,
+          "hwaddr": "aa:e7:11:a1:1e:a5",
+          "ip": "192.168.8.168",
+          "name": "*",
+          "clientid": "01:aa:e7:11:a1:1e:a5"
+        },
+        {
+          "expires": 1767301070,
+          "hwaddr": "b4:ec:02:94:8a:d0",
+          "ip": "192.168.8.70",
+          "name": "vw_wlan_1505",
+          "clientid": "01:b4:ec:02:94:8a:d0"
+        },
+        {
+          "expires": 1767376980,
+          "hwaddr": "48:d6:d5:62:f1:28",
+          "ip": "192.168.8.68",
+          "name": "chromecast-ultra",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767376969,
+          "hwaddr": "c8:12:0b:a9:de:9f",
+          "ip": "192.168.8.19",
+          "name": "samsung_hw-q935gc",
+          "clientid": "01:c8:12:0b:a9:de:9f"
+        },
+        {
+          "expires": 1767380281,
+          "hwaddr": "1c:86:9a:09:59:94",
+          "ip": "192.168.8.14",
+          "name": "samsung-tv-gq75qn92catxzg",
+          "clientid": "01:1c:86:9a:09:59:94"
+        },
+        {
+          "expires": 1767356892,
+          "hwaddr": "36:00:67:c5:81:32",
+          "ip": "192.168.8.33",
+          "name": "ns25",
+          "clientid": "01:36:00:67:c5:81:32"
+        },
+        {
+          "expires": 1767407385,
+          "hwaddr": "02:7b:27:ab:bc:a5",
+          "ip": "192.168.8.25",
+          "name": "as25",
+          "clientid": "01:02:7b:27:ab:bc:a5"
+        },
+        {
+          "expires": 1767445209,
+          "hwaddr": "58:bf:25:17:5e:d4",
+          "ip": "192.168.9.130",
+          "name": "home-assistant-glow",
+          "clientid": "01:58:bf:25:17:5e:d4"
+        },
+        {
+          "expires": 1767313834,
+          "hwaddr": "f0:57:a6:f9:73:92",
+          "ip": "192.168.8.189",
+          "name": "beastly-NB",
+          "clientid": "01:f0:57:a6:f9:73:92"
+        },
+        {
+          "expires": 1767436863,
+          "hwaddr": "36:a9:96:19:16:4b",
+          "ip": "192.168.8.92",
+          "name": "leo-a54",
+          "clientid": "01:36:a9:96:19:16:4b"
+        },
+        {
+          "expires": 1767359909,
+          "hwaddr": "a8:1e:84:05:da:27",
+          "ip": "192.168.8.176",
+          "name": "Schick-NB-Leo",
+          "clientid": "01:a8:1e:84:05:da:27"
+        },
+        {
+          "expires": 1767255748,
+          "hwaddr": "b4:22:00:44:99:bd",
+          "ip": "192.168.8.201",
+          "name": "brnb422004499bd",
+          "clientid": "01:b4:22:00:44:99:bd"
+        },
+        {
+          "expires": 1767304080,
+          "hwaddr": "1c:3b:f3:7f:57:52",
+          "ip": "192.168.8.7",
+          "name": "tl-sg105e",
+          "clientid": "01:1c:3b:f3:7f:57:52"
+        },
+        {
+          "expires": 1767375931,
+          "hwaddr": "30:b5:c2:9b:f8:77",
+          "ip": "192.168.8.6",
+          "name": "tl-sg1024de",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767439582,
+          "hwaddr": "14:bb:6e:31:9e:44",
+          "ip": "192.168.8.86",
+          "name": "samsung-tv-leo2",
+          "clientid": "01:14:bb:6e:31:9e:44"
+        },
+        {
+          "expires": 1767194960,
+          "hwaddr": "36:a7:36:1e:34:0a",
+          "ip": "192.168.8.95",
+          "name": "iphone-von-vitali",
+          "clientid": "01:36:a7:36:1e:34:0a"
+        },
+        {
+          "expires": 1767438460,
+          "hwaddr": "d8:cb:8a:15:4e:f1",
+          "ip": "192.168.8.80",
+          "name": "meister-pc",
+          "clientid": "01:d8:cb:8a:15:4e:f1"
+        },
+        {
+          "expires": 1767350949,
+          "hwaddr": "68:3a:48:5b:de:3e",
+          "ip": "192.168.8.90",
+          "name": "samsung-washer-sergej",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767436269,
+          "hwaddr": "c8:7f:54:5c:c5:04",
+          "ip": "192.168.8.150",
+          "name": "Beastly-V2",
+          "clientid": "01:c8:7f:54:5c:c5:04"
+        },
+        {
+          "expires": 1767351028,
+          "hwaddr": "c8:0e:14:c7:8d:22",
+          "ip": "192.168.8.3",
+          "name": "fritz-larissa-2",
+          "clientid": "01:c8:0e:14:c7:8d:22"
+        },
+        {
+          "expires": 1767186050,
+          "hwaddr": "5c:c3:36:2e:38:a1",
+          "ip": "192.168.8.210",
+          "name": "reolink-e1-zoom",
+          "clientid": "01:5c:c3:36:2e:38:a1"
+        },
+        {
+          "expires": 1767297286,
+          "hwaddr": "ac:15:a2:44:a4:fc",
+          "ip": "192.168.9.190",
+          "name": "deco-x55-1",
+          "clientid": "01:ac:15:a2:44:a4:fc"
+        },
+        {
+          "expires": 1767199449,
+          "hwaddr": "60:01:94:b2:a4:7d",
+          "ip": "192.168.9.170",
+          "name": "sonoffrfbridger2_01",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767192265,
+          "hwaddr": "84:f3:eb:4a:8d:e4",
+          "ip": "192.168.9.180",
+          "name": "sonoffpowr2_01",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767188272,
+          "hwaddr": "1c:90:ff:a5:d0:5c",
+          "ip": "192.168.9.214",
+          "name": "tuyaplug5",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767412384,
+          "hwaddr": "cc:f4:11:ab:8e:bb",
+          "ip": "192.168.8.61",
+          "name": "google-nest-mini",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767193424,
+          "hwaddr": "80:7d:3a:32:37:cf",
+          "ip": "192.168.9.183",
+          "name": "sonoffpowr2_04",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767414662,
+          "hwaddr": "1c:90:ff:a5:c3:b7",
+          "ip": "192.168.9.213",
+          "name": "tuyaplug4",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767303211,
+          "hwaddr": "50:8b:b9:32:09:f8",
+          "ip": "192.168.9.217",
+          "name": "tuyaplug8",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767202260,
+          "hwaddr": "1c:90:ff:a5:9c:32",
+          "ip": "192.168.9.211",
+          "name": "tuyaplug2",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767193979,
+          "hwaddr": "1c:90:ff:a5:57:e3",
+          "ip": "192.168.9.212",
+          "name": "tuyaplug3",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767185669,
+          "hwaddr": "34:b7:da:8d:b2:54",
+          "ip": "192.168.9.151",
+          "name": "shelly1pmminig3-34b7da8db254",
+          "clientid": "01:34:b7:da:8d:b2:54"
+        },
+        {
+          "expires": 1767186027,
+          "hwaddr": "68:39:43:fb:59:02",
+          "ip": "192.168.8.209",
+          "name": "reolink-rlc-510wa-w1",
+          "clientid": "01:68:39:43:fb:59:02"
+        },
+        {
+          "expires": 1767213312,
+          "hwaddr": "ac:15:a2:44:a4:3c",
+          "ip": "192.168.9.192",
+          "name": "deco-x55-2",
+          "clientid": "01:ac:15:a2:44:a4:3c"
+        },
+        {
+          "expires": 1767213329,
+          "hwaddr": "ac:15:a2:44:a3:ec",
+          "ip": "192.168.9.194",
+          "name": "deco-x55-3",
+          "clientid": "01:ac:15:a2:44:a3:ec"
+        },
+        {
+          "expires": 1767147777,
+          "hwaddr": "ac:ba:c0:e3:48:86",
+          "ip": "192.168.8.67",
+          "name": "yandex-station-midi-ec5k",
+          "clientid": "ff:c0:e3:48:86:00:01:00:01:c7:92:bc:86:ac:ba:d0:e3:48:86"
+        },
+        {
+          "expires": 1767198146,
+          "hwaddr": "80:7d:3a:32:3d:07",
+          "ip": "192.168.9.182",
+          "name": "sonoffpowr2_03",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767409493,
+          "hwaddr": "30:fd:38:a5:e6:ab",
+          "ip": "192.168.8.63",
+          "name": "google-home-mini-flur",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767198878,
+          "hwaddr": "60:01:94:ca:ab:e3",
+          "ip": "192.168.9.178",
+          "name": "sonoff4chpror2",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767181793,
+          "hwaddr": "1c:90:ff:a5:47:4d",
+          "ip": "192.168.9.210",
+          "name": "tuyaplug1",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767179500,
+          "hwaddr": "50:8b:b9:34:92:b5",
+          "ip": "192.168.9.218",
+          "name": "tuyaplug9",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767204963,
+          "hwaddr": "a8:80:55:ee:7f:c5",
+          "ip": "192.168.9.216",
+          "name": "tuyaplug7",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767186028,
+          "hwaddr": "5c:c3:36:0b:d7:ed",
+          "ip": "192.168.8.207",
+          "name": "reolink-rlc-510wa-w2",
+          "clientid": "01:5c:c3:36:0b:d7:ed"
+        },
+        {
+          "expires": 1767183706,
+          "hwaddr": "b8:27:eb:18:08:6d",
+          "ip": "192.168.8.18",
+          "name": "octopi",
+          "clientid": "01:b8:27:eb:18:08:6d"
+        },
+        {
+          "expires": 1767181422,
+          "hwaddr": "60:01:94:84:db:6f",
+          "ip": "192.168.9.179",
+          "name": "sonoffbnsz01",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767204265,
+          "hwaddr": "98:f4:ab:f3:7b:28",
+          "ip": "192.168.9.154",
+          "name": "shellyswitch25-f37b28",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767200682,
+          "hwaddr": "84:f3:eb:4a:85:d1",
+          "ip": "192.168.9.181",
+          "name": "sonoffpowr2_02",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767179608,
+          "hwaddr": "98:f4:ab:f3:7a:8c",
+          "ip": "192.168.9.155",
+          "name": "shellyswitch25-f37a8c",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767211901,
+          "hwaddr": "c8:2b:96:10:ea:a4",
+          "ip": "192.168.9.153",
+          "name": "shellyswitch25-10eaa4",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767390392,
+          "hwaddr": "c8:2b:96:10:a3:6d",
+          "ip": "192.168.9.156",
+          "name": "shellyswitch25-10a36d",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767420344,
+          "hwaddr": "40:31:3c:ad:34:6c",
+          "ip": "192.168.8.212",
+          "name": "roborocks50",
+          "clientid": "01:40:31:3c:ad:34:6c"
+        },
+        {
+          "expires": 1767210676,
+          "hwaddr": "00:0c:29:d9:da:2b",
+          "ip": "192.168.8.252",
+          "name": "hass",
+          "clientid": "01:00:0c:29:d9:da:2b"
+        },
+        {
+          "expires": 1767396516,
+          "hwaddr": "24:5e:be:0e:a0:e2",
+          "ip": "192.168.8.10",
+          "name": "schick-nas",
+          "clientid": "01:24:5e:be:0e:a0:e2"
+        },
+        {
+          "expires": 1767381536,
+          "hwaddr": "1c:69:7a:63:f7:b3",
+          "ip": "192.168.8.254",
+          "name": "schick-nuc",
+          "clientid": "01:1c:69:7a:63:f7:b3"
+        },
+        {
+          "expires": 1767186041,
+          "hwaddr": "ec:71:db:8c:ab:4c",
+          "ip": "192.168.8.205",
+          "name": "reolink-e1-zoom-3",
+          "clientid": "01:ec:71:db:8c:ab:4c"
+        },
+        {
+          "expires": 1767176502,
+          "hwaddr": "28:05:a5:0f:80:14",
+          "ip": "192.168.9.124",
+          "name": "garage",
+          "clientid": "01:28:05:a5:0f:80:14"
+        },
+        {
+          "expires": 1766976315,
+          "hwaddr": "00:08:9b:bd:b8:fe",
+          "ip": "192.168.8.13",
+          "name": "qnap119",
+          "clientid": "01:00:08:9b:bd:b8:fe"
+        },
+        {
+          "expires": 1767381445,
+          "hwaddr": "28:6d:97:46:58:0e",
+          "ip": "192.168.8.240",
+          "name": "samsung_trockner",
+          "clientid": "01:28:6d:97:46:58:0e"
+        },
+        {
+          "expires": 1766986892,
+          "hwaddr": "08:21:ef:9f:1d:80",
+          "ip": "192.168.8.85",
+          "name": "samsung-tab-e",
+          "clientid": "01:08:21:ef:9f:1d:80"
+        },
+        {
+          "expires": 1767193669,
+          "hwaddr": "c8:2b:96:10:c7:c3",
+          "ip": "192.168.9.157",
+          "name": "shellyswitch25-10c7c3",
+          "clientid": "*"
+        },
+        {
+          "expires": 1766849232,
+          "hwaddr": "04:cf:8c:78:83:77",
+          "ip": "192.168.9.100",
+          "name": "yeelight-light-ceiling1_mibt13035629",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767301098,
+          "hwaddr": "ba:86:6d:ee:d3:68",
+          "ip": "192.168.8.55",
+          "name": "vs25p",
+          "clientid": "01:ba:86:6d:ee:d3:68"
+        },
+        {
+          "expires": 1767128454,
+          "hwaddr": "58:bf:25:93:31:d0",
+          "ip": "192.168.9.128",
+          "name": "wled-1",
+          "clientid": "*"
+        },
+        {
+          "expires": 1767189125,
+          "hwaddr": "86:f1:5b:84:3b:a9",
+          "ip": "192.168.8.151",
+          "name": "*",
+          "clientid": "01:86:f1:5b:84:3b:a9"
+        },
+        {
+          "expires": 1767301625,
+          "hwaddr": "7e:9f:10:fa:4f:88",
+          "ip": "192.168.8.172",
+          "name": "*",
+          "clientid": "01:7e:9f:10:fa:4f:88"
+        },
+        {
+          "expires": 1767408341,
+          "hwaddr": "50:ec:50:1a:2e:b7",
+          "ip": "192.168.8.215",
+          "name": "roborocks5max",
+          "clientid": "01:50:ec:50:1a:2e:b7"
+        }
+      ],
+      "took": 0.0007843971252441406
+    }
+  }
+}
