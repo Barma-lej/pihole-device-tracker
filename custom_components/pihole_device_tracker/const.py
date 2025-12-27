@@ -7,7 +7,7 @@ CONF_HOST = "host"
 CONF_SCAN_INTERVAL = "scan_interval"
 
 DEFAULT_HOST = "http://pi.hole"
-DEFAULT_PASSWORD = ""  # Password is required for DHCP API access
+CONF_PASSWORD = ""  # Password is required for DHCP API access
 DEFAULT_SCAN_INTERVAL = 30  # seconds
 DEFAULT_AWAY_TIME = 900  # seconds → 15 min
 
