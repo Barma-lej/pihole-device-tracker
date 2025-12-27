@@ -3,17 +3,38 @@
     "step": {
       "user": {
         "title": "Connect to Pi-hole",
-        "description": "Enter the IP address or hostname of your Pi-hole instance. The API key is optional.",
+        "description": "Enter the IP address or hostname of your Pi-hole instance.",
         "data": {
           "host": "Pi-hole Host (IP or hostname)",
-          "api_key": "API Key (optional)",
-          "interval": "Update Interval (seconds)"
+          "password": "Web Interface Password",
+          "poll_interval": "Poll Interval (seconds)",
+          "consider_away": "Consider Away After (seconds)"
+        },
+        "data_description": {
+          "host": "IP address or hostname of your Pi-hole (e.g., 192.168.1.100 or pi.hole)",
+          "password": "Leave empty if no password is set",
+          "poll_interval": "How often to check Pi-hole for device updates (minimum 5 seconds)",
+          "consider_away": "Time without DNS activity before marking device as away (900 seconds = 15 minutes)"
         }
       }
     },
     "error": {
-      "cannot_connect": "Failed to connect to Pi-hole",
-      "unknown": "Unexpected error"
+      "cannot_connect": "Failed to connect to Pi-hole. Check the host and network connectivity.",
+      "unknown": "An unexpected error occurred. Check the logs."
+    },
+    "abort": {
+      "already_configured": "This Pi-hole instance is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Update Pi-hole Device Tracker Options",
+        "data": {
+          "poll_interval": "Poll Interval (seconds)",
+          "consider_away": "Consider Away After (seconds)"
+        }
+      }
     }
   }
 }

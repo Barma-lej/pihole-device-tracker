@@ -1,0 +1,40 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Mit Pi-hole verbinden",
+        "description": "Geben Sie die IP-Adresse oder den Hostnamen Ihrer Pi-hole-Instanz ein.",
+        "data": {
+          "host": "Pi-hole Host (IP oder Hostname)",
+          "password": "Webinterface-Passwort",
+          "poll_interval": "Abfrageintervall (Sekunden)",
+          "consider_away": "Als abwesend betrachten nach (Sekunden)"
+        },
+        "data_description": {
+          "host": "IP-Adresse oder Hostname Ihres Pi-hole (z.B. 192.168.1.100 oder pi.hole)",
+          "password": "Lassen Sie das Feld leer, wenn kein Passwort gesetzt ist",
+          "poll_interval": "Wie oft Pi-hole auf Geräteaktualisierungen prüfen soll (Minimum 5 Sekunden)",
+          "consider_away": "Zeit ohne DNS-Aktivität, bevor das Gerät als abwesend markiert wird (900 Sekunden = 15 Minuten)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung zu Pi-hole fehlgeschlagen. Überprüfen Sie den Host und die Netzwerkverbindung.",
+      "unknown": "Ein unerwarteter Fehler ist aufgetreten. Überprüfen Sie die Protokolle."
+    },
+    "abort": {
+      "already_configured": "Diese Pi-hole-Instanz ist bereits konfiguriert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Pi-hole Device Tracker Optionen aktualisieren",
+        "data": {
+          "poll_interval": "Abfrageintervall (Sekunden)",
+          "consider_away": "Als abwesend betrachten nach (Sekunden)"
+        }
+      }
+    }
+  }
+}
