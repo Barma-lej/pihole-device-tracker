@@ -3,36 +3,51 @@
     "step": {
       "user": {
         "title": "Настройка Pi-hole Device Tracker",
-        "description": "Настройте ваш экземпляр Pi-hole v6.0+ для отслеживания устройств",
+        "description": "Настройте ваш Pi-hole для отслеживания устройств",
         "data": {
-          "host": "Pi-hole хост (IP или имя хоста)",
+          "host": "Хост Pi-hole",
           "password": "Пароль веб-интерфейса",
           "scan_interval": "Интервал опроса (секунды)",
           "away_time": "Считать ушедшим через (секунды)"
         },
         "data_description": {
-          "host": "IP-адрес или имя хоста вашего Pi-hole (например, 192.168.1.100 или pi.hole)",
+          "host": "IP-адрес или имя хоста Pi-hole",
           "password": "Оставьте пустым, если пароль не установлен",
-          "scan_interval": "Как часто проверять Pi-hole на наличие обновлений устройств (минимум 5 секунд)",
-          "away_time": "Время без DNS-активности перед пометкой устройства как ушедшего (900 секунд = 15 минут)"
+          "scan_interval": "Как часто проверять обновления",
+          "away_time": "Время без активности перед пометкой 'не дома'"
         }
       }
     },
     "error": {
-      "cannot_connect": "Не удалось подключиться к Pi-hole. Проверьте хост и сетевое соединение.",
-      "unknown": "Произошла непредвиденная ошибка. Проверьте журналы."
+      "cannot_connect": "Не удалось подключиться к Pi-hole",
+      "unknown": "Произошла ошибка. Проверьте журналы."
     },
     "abort": {
-      "already_configured": "Этот экземпляр Pi-hole уже настроен."
+      "already_configured": "Pi-hole уже настроен"
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Обновление параметров Pi-hole Device Tracker",
+        "title": "Параметры Pi-hole Device Tracker",
+        "description": "Настройте SSH-доступ к Pi-hole для мониторинга ARP-таблицы",
         "data": {
+          "ssh_host": "SSH хост (IP Pi-hole)",
+          "ssh_port": "SSH порт",
+          "ssh_username": "SSH пользователь",
+          "ssh_password": "SSH пароль",
+          "ssh_key_path": "Путь к приватному ключу",
           "scan_interval": "Интервал опроса (секунды)",
           "away_time": "Считать ушедшим через (секунды)"
+        },
+        "data_description": {
+          "ssh_host": "IP-адрес вашего Raspberry Pi",
+          "ssh_port": "SSH порт (по умолчанию 22)",
+          "ssh_username": "Пользователь для SSH (например, pi)",
+          "ssh_password": "Пароль SSH (оставьте пустым, если используете ключ)",
+          "ssh_key_path": "Путь к файлу приватного ключа",
+          "scan_interval": "Как часто проверять обновления",
+          "away_time": "Время без активности перед пометкой 'не дома'"
         }
       }
     }
