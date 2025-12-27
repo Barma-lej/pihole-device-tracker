@@ -1,6 +1,7 @@
 from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
+import logging
 
 from homeassistant.components.device_tracker import TrackerEntity
 from homeassistant.const import STATE_HOME, STATE_NOT_HOME
@@ -23,6 +24,8 @@ from .const import (
     ATTR_INTERFACE,
 )
 
+_LOGGER = logging.getLogger(__name__)
+
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
@@ -43,12 +46,55 @@ class PiholeTracker(CoordinatorEntity, TrackerEntity):
 
     _attr_entity_category = EntityCategory.DIAGNOSTIC
 
+    def _get_device_name(self) -> str:
+        """Определить имя устройства: name → IP → MAC."""
+        if self._mac not in self.coordinator.data:
+            return self._mac
+        
+        info = self.coordinator.data[self._mac]
+        
+        # 1. Пробуем name
+        name = info.get(ATTR_NAME)
+        if name and name != "*" and name.strip():
+            return name.strip()
+        
+        # 2. Пробуем IP
+        ips = info.get(ATTR_IPS)
+        if ips:
+            # ips может быть списком или строкой
+            if isinstance(ips, list) and ips:
+                return ips[0]
+            elif isinstance(ips, str) and ips:
+                return ips
+        
+        # 3. Возвращаем MAC
+        return self._mac
+
+    def _sanitize_for_entity_id(self, name: str) -> str:
+        """Преобразовать имя в допустимый entity_id."""
+        # Удаляем спецсимволы, заменяем пробелы на _
+        import re
+        name = re.sub(r'[^a-zA-Z0-9_]', '_', name)
+        name = re.sub(r'_+', '_', name)  # множественные _ → один _
+        name = name.strip('_')
+        return name.lower()[:64]  # ограничение длины
+
     def __init__(self, coordinator, mac: str, away_time: int) -> None:
         super().__init__(coordinator)
         self._mac = mac
         self._away = away_time
-        self._attr_unique_id = f"{DOMAIN}_{mac.replace(':','')}_pihole"
-        self._attr_name = "Presence via Pi-hole"
+        
+        # Формируем имя: name → IP → MAC
+        device_name = self._get_device_name()
+        
+        # name для отображения
+        self._attr_name = device_name
+        
+        # unique_id и entity_id на основе имени
+        safe_name = self._sanitize_for_entity_id(device_name)
+        self._attr_unique_id = f"{DOMAIN}_{safe_name}"
+        
+        _LOGGER.debug(f"Tracker created: MAC={mac}, name={device_name}, unique_id={self._attr_unique_id}")
 
     @property
     def is_connected(self) -> bool:
