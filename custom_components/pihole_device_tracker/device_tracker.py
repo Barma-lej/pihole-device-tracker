@@ -11,7 +11,17 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
 
-from .const import DOMAIN, ATTR_LAST_QUERY, ATTR_NAME, ATTR_MAC_VENDOR
+from .const import (
+    DOMAIN,
+    ATTR_FIRST_SEEN,
+    ATTR_LAST_QUERY,
+    ATTR_NUM_QUERIES,
+    ATTR_MAC_VENDOR,
+    ATTR_IPS,
+    ATTR_NAME,
+    ATTR_DHCP_EXPIRES,
+    ATTR_INTERFACE,
+)
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -58,10 +68,27 @@ class PiholeTracker(CoordinatorEntity, TrackerEntity):
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
-        last = self.coordinator.data[self._mac].get(ATTR_LAST_QUERY)
+        if self._mac not in self.coordinator.data:
+            return {}
+        
+        info = self.coordinator.data[self._mac]
+        last = info.get(ATTR_LAST_QUERY)
+        now_ts = datetime.now(timezone.utc).timestamp()
+        
         return {
             "last_query": datetime.fromtimestamp(last, timezone.utc).isoformat()
-            if isinstance(last, (int, float)) else None
+            if isinstance(last, (int, float)) else None,
+            "last_query_seconds_ago": int(now_ts - last)
+            if isinstance(last, (int, float)) else None,
+            "first_seen": datetime.fromtimestamp(info.get(ATTR_FIRST_SEEN), timezone.utc).isoformat()
+            if isinstance(info.get(ATTR_FIRST_SEEN), (int, float)) else None,
+            "num_queries": info.get(ATTR_NUM_QUERIES),
+            "mac_vendor": info.get(ATTR_MAC_VENDOR),
+            "ips": info.get(ATTR_IPS),
+            "name": info.get(ATTR_NAME),
+            "dhcp_expires": datetime.fromtimestamp(info.get(ATTR_DHCP_EXPIRES), timezone.utc).isoformat()
+            if isinstance(info.get(ATTR_DHCP_EXPIRES), (int, float)) else None,
+            "interface": info.get(ATTR_INTERFACE),
         }
 
     @property
