@@ -1,5 +1,11 @@
 # Pi-hole Device Tracker
 
+[![HACS][hacs-image]][hacs-url]
+[![Buy Me A Coffee][buymeacoffee-image]][buymeacoffee-url]
+<!-- ![Latest release][latest-url] -->
+<!-- ![All releases][downloads] -->
+<!-- ![Latest release][downloads_latest] -->
+
 A Home Assistant integration for tracking devices on your network using Pi-hole v6.0+.
 
 ## Features
@@ -180,3 +186,21 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file for
 ## Support
 
 For issues, questions, or suggestions, please open an issue on GitHub: https://github.com/Barma-lej/pihole-device-tracker/issues
+
+**💡 Tip:** If you like this project just buy me a cup of ☕️ or 🥤:
+
+[![Buy Me A Coffee][buymeacoffee-img]][buymeacoffee-url]
+
+<!-- Badges -->
+
+[hacs-url]: https://github.com/hacs/integration
+[hacs-image]: https://img.shields.io/badge/hacs-default-orange.svg?style=flat-square
+[buymeacoffee-url]: https://www.buymeacoffee.com/barma
+[buymeacoffee-image]: https://img.shields.io/badge/donate-Coffee-ff813f.svg
+<!-- [latest-url]: https://img.shields.io/github/v/release/Barma-lej/pihole-device-tracker
+[downloads]: https://img.shields.io/github/downloads/Barma-lej/pihole-device-tracker/total
+[downloads_latest]: https://img.shields.io/github/downloads/Barma-lej/pihole-device-tracker/latest/total -->
+
+<!-- References -->
+
+[buymeacoffee-img]: https://www.buymeacoffee.com/assets/img/custom_images/white_img.png

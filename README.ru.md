@@ -1,5 +1,11 @@
 # Pi-hole Device Tracker
 
+[![HACS][hacs-image]][hacs-url]
+[![Buy Me A Coffee][buymeacoffee-image]][buymeacoffee-url]
+<!-- ![Latest release][latest-url] -->
+<!-- ![All releases][downloads] -->
+<!-- ![Latest release][downloads_latest] -->
+
 Интеграция Home Assistant для отслеживания устройств в сети с помощью Pi-hole v6.0+.
 
 ## Возможности
@@ -51,6 +57,7 @@
 ### Идентификаторы сущностей
 
 Идентификаторы генерируются на основе имени устройства + последние 4 символа MAC + "pihole":
+
 - `device_tracker.iphone_a1b2_pihole`
 - `device_tracker.macbook_c3d4_pihole`
 - `device_tracker.192_168_1_50_pihole` (если имя недоступно)
@@ -58,6 +65,7 @@
 ### Атрибуты
 
 Каждый трекер включает дополнительные атрибуты:
+
 - `last_query`: Метка времени последнего DNS-запроса
 - `last_query_seconds_ago`: Секунды с последней активности
 - `first_seen`: Когда устройство было впервые замечено
@@ -175,3 +183,21 @@ isort custom_components/pihole_device_tracker
 ## Поддержка
 
 По вопросам, предложениям или проблемам, пожалуйста, создайте issue на GitHub: https://github.com/Barma-lej/pihole-device-tracker/issues
+
+**💡 Совет:** Если Вам понравился проект, Вы можете купить чашку ☕️ или 🥤:
+
+[![Buy Me A Coffee][buymeacoffee-img]][buymeacoffee-url]
+
+<!-- Badges -->
+
+[hacs-url]: https://github.com/hacs/integration
+[hacs-image]: https://img.shields.io/badge/hacs-default-orange.svg?style=flat-square
+[buymeacoffee-url]: https://www.buymeacoffee.com/barma
+[buymeacoffee-image]: https://img.shields.io/badge/donate-Coffee-ff813f.svg
+<!-- [latest-url]: https://img.shields.io/github/v/release/Barma-lej/pihole-device-tracker
+[downloads]: https://img.shields.io/github/downloads/Barma-lej/pihole-device-tracker/total
+[downloads_latest]: https://img.shields.io/github/downloads/Barma-lej/pihole-device-tracker/latest/total -->
+
+<!-- References -->
+
+[buymeacoffee-img]: https://www.buymeacoffee.com/assets/img/custom_images/white_img.png
