@@ -10,5 +10,5 @@
     "@Barma-lej"
   ],
   "iot_class": "Local Polling",
-  "icon": "mdi:pi-hole"
+  "icon": "/local/custom_components/pihole_device_tracker/local_icon.svg"
 }

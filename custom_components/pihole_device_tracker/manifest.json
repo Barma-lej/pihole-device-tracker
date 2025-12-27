@@ -10,6 +10,6 @@
   "codeowners": ["@Barma-lej"],
   "config_flow": true,
   "platforms": ["device_tracker"],
-  "icon": "mdi:pi-hole",
+  "icon": "/local/custom_components/pihole_device_tracker/local_icon.svg",
   "integration_type": "device"
 }
