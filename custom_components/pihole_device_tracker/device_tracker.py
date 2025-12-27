@@ -11,7 +11,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
 
-from .const import DOMAIN, CONF_AWAY_TIME, ATTR_LAST_QUERY, ATTR_NAME, ATTR_MAC_VENDOR
+from .const import DOMAIN, ATTR_LAST_QUERY, ATTR_NAME, ATTR_MAC_VENDOR
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -42,9 +42,13 @@ class PiholeTracker(CoordinatorEntity, TrackerEntity):
 
     @property
     def is_connected(self) -> bool:
+        if self._mac not in self.coordinator.data:
+            return False
+
         last = self.coordinator.data[self._mac].get(ATTR_LAST_QUERY)
         if not isinstance(last, (int, float)):
             return False
+
         return (datetime.now(timezone.utc).timestamp() - last) <= self._away
 
     @property

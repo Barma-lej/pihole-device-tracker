@@ -71,6 +71,9 @@ class PiholeAttrSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def native_value(self) -> Any:
+        if self._mac not in self.coordinator.data:
+            return None  # или STATE_UNAVAILABLE
+
         data = self.coordinator.data[self._mac]
         val = data.get(self._attr)
         now_ts = datetime.now(timezone.utc).timestamp()
