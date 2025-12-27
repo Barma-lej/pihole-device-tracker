@@ -86,9 +86,9 @@ class PiholeTracker(CoordinatorEntity, TrackerEntity):
         self._mac = mac
         self._away = away_time
 
-        # Формируем имя: name → IP → MAC
+        # Формируем имя: name → IP → MAC + _pihole
         device_name = self._get_device_name()
-        self._attr_name = device_name
+        self._attr_name = f"{device_name}_pihole"
 
         # unique_id: safe_name + 4 символа MAC + pihole
         safe_name = self._sanitize_for_entity_id(device_name)
