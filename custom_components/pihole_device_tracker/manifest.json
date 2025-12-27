@@ -9,7 +9,7 @@
   "dependencies": [],
   "codeowners": ["@Barma-lej"],
   "config_flow": true,
-  "platforms": ["sensor", "device_tracker"],
+  "platforms": ["device_tracker"],
   "icon": "mdi:pi-hole",
   "integration_type": "device"
 }
