@@ -7,14 +7,14 @@
         "data": {
           "host": "Pi-hole Host (IP oder Hostname)",
           "password": "Webinterface-Passwort",
-          "poll_interval": "Abfrageintervall (Sekunden)",
-          "consider_away": "Als abwesend betrachten nach (Sekunden)"
+          "scan_interval": "Abfrageintervall (Sekunden)",
+          "away_time": "Als abwesend betrachten nach (Sekunden)"
         },
         "data_description": {
           "host": "IP-Adresse oder Hostname Ihres Pi-hole (z.B. 192.168.1.100 oder pi.hole)",
           "password": "Lassen Sie das Feld leer, wenn kein Passwort gesetzt ist",
-          "poll_interval": "Wie oft Pi-hole auf Geräteaktualisierungen prüfen soll (Minimum 5 Sekunden)",
-          "consider_away": "Zeit ohne DNS-Aktivität, bevor das Gerät als abwesend markiert wird (900 Sekunden = 15 Minuten)"
+          "scan_interval": "Wie oft Pi-hole auf Geräteaktualisierungen prüfen soll (Minimum 5 Sekunden)",
+          "away_time": "Zeit ohne DNS-Aktivität, bevor das Gerät als abwesend markiert wird (900 Sekunden = 15 Minuten)"
         }
       }
     },
@@ -31,8 +31,8 @@
       "init": {
         "title": "Pi-hole Device Tracker Optionen aktualisieren",
         "data": {
-          "poll_interval": "Abfrageintervall (Sekunden)",
-          "consider_away": "Als abwesend betrachten nach (Sekunden)"
+          "scan_interval": "Abfrageintervall (Sekunden)",
+          "away_time": "Als abwesend betrachten nach (Sekunden)"
         }
       }
     }

@@ -7,14 +7,14 @@
         "data": {
           "host": "Host",
           "password": "Web Interface Password",
-          "poll_interval": "Poll Interval (seconds)",
-          "consider_away": "Consider Away After (seconds)"
+          "scan_interval": "Poll Interval (seconds)",
+          "away_time": "Consider Away After (seconds)"
         },
         "data_description": {
           "host": "IP address or hostname of your Pi-hole (e.g., 192.168.1.100 or pi.hole)",
           "password": "Leave empty if no password is set",
-          "poll_interval": "How often to check Pi-hole for device updates (minimum 5 seconds)",
-          "consider_away": "Time without DNS activity before marking device as away (900 seconds = 15 minutes)"
+          "scan_interval": "How often to check Pi-hole for device updates (minimum 5 seconds)",
+          "away_time": "Time without DNS activity before marking device as away (900 seconds = 15 minutes)"
         }
       }
     },
@@ -31,8 +31,8 @@
       "init": {
         "title": "Update Pi-hole Device Tracker Options",
         "data": {
-          "poll_interval": "Poll Interval (seconds)",
-          "consider_away": "Consider Away After (seconds)"
+          "scan_interval": "Poll Interval (seconds)",
+          "away_time": "Consider Away After (seconds)"
         }
       }
     }
