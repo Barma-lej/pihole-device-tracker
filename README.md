@@ -1,14 +1,15 @@
 # Pi-hole Device Tracker
 
-A Home Assistant integration for tracking devices connected to Pi-hole.
+A Home Assistant integration for tracking devices on your network using Pi-hole v6.0+.
 
 ## Features
 
-- 🔍 Track devices on your network using Pi-hole
+- 🔍 Track devices based on DNS activity in Pi-hole
 - 🏠 Integration with Home Assistant device tracker platform
-- ⚙️ Configurable update intervals
-- 🔐 Optional API key authentication
-- 📊 Real-time device activity monitoring
+- ⚙️ Configurable update intervals (minimum 5 seconds)
+- 🔐 Password authentication for Pi-hole web interface
+- 📊 Rich device information (name, IP, MAC vendor, last query time)
+- 🌐 Multi-language support (EN, RU, DE)
 
 ## Installation
 
@@ -27,7 +28,7 @@ A Home Assistant integration for tracking devices connected to Pi-hole.
 2. Extract to `config/custom_components/pihole_device_tracker/`
 3. Restart Home Assistant
 4. Go to Settings → Devices & Services
-5. Click "Create Integration"
+5. Click "Add Integration"
 6. Search for "Pi-hole Device Tracker"
 
 ## Configuration
@@ -35,26 +36,39 @@ A Home Assistant integration for tracking devices connected to Pi-hole.
 ### Setup Flow
 
 1. Go to Settings → Devices & Services
-2. Click "Create Integration"
+2. Click "Add Integration"
 3. Select "Pi-hole Device Tracker"
 4. Enter:
-   - **Host**: IP address or hostname (e.g., `192.168.1.100`)
-   - **API Key**: (optional) Your Pi-hole API key
-   - **Update Interval**: How often to check (default: 30 seconds)
-
-### Configuration via YAML
-
-```yaml
-device_tracker:
-  - platform: pihole_device_tracker
-    host: 192.168.1.100
-    api_key: your_api_key_here
-    interval: 30
-```
+   - **Host**: Pi-hole IP or hostname (e.g., `192.168.1.100` or `pi.hole`)
+   - **Password**: Web interface password (leave empty if no password)
+   - **Poll Interval**: How often to check Pi-hole (default: 30 seconds, min: 5)
+   - **Consider Away After**: Time without DNS activity before marking device as away (default: 900 seconds = 15 minutes)
 
 ## Usage
 
 Once configured, devices will appear in Home Assistant as device tracker entities.
+
+### Entity IDs
+
+Entity IDs are generated based on device name + last 4 MAC characters + "pihole":
+
+- `device_tracker.iphone_a1b2_pihole`
+- `device_tracker.macbook_c3d4_pihole`
+- `device_tracker.192_168_1_50_pihole` (if no name available)
+
+### Attributes
+
+Each tracker includes additional attributes:
+
+- `last_query`: Timestamp of last DNS query
+- `last_query_seconds_ago`: Seconds since last activity
+- `first_seen`: When device was first seen
+- `num_queries`: Total number of queries
+- `mac_vendor`: Device manufacturer
+- `ips`: IP addresses
+- `name`: Device name from Pi-hole
+- `dhcp_expires`: DHCP lease expiration
+- `interface`: Network interface
 
 ### Automations Example
 
@@ -63,25 +77,45 @@ automation:
   - alias: "Notify when device comes home"
     trigger:
       platform: state
-      entity_id: device_tracker.pihole_device
-      to: home
+      entity_id: device_tracker.iphone_a1b2_pihole
+      to: "home"
     action:
       service: notify.mobile_app_phone
       data:
         message: "Device connected to network"
+
+  - alias: "Notify when device leaves"
+    trigger:
+      platform: state
+      entity_id: device_tracker.iphone_a1b2_pihole
+      to: "not_home"
+    action:
+      service: notify.mobile_app_phone
+      data:
+        message: "Device left the network"
 ```
 
 ## Troubleshooting
 
 ### Connection Issues
-- Verify Pi-hole host is reachable
-- Check network connectivity
-- Ensure API key is correct (if used)
+
+- Verify Pi-hole host is reachable: `ping <host>`
+- Check network connectivity between Home Assistant and Pi-hole
+- Ensure password is correct (if configured)
+- Check Pi-hole API is enabled (Settings → API → Web server API)
 
 ### No Devices Showing
-- Check Pi-hole logs
+
+- Devices must have DNS activity to appear
+- Check Pi-hole settings → Network for device list
 - Verify update interval is reasonable
-- Ensure devices have activity
+- Check Home Assistant logs: Settings → System → Logs
+
+### Devices Not Updating
+
+- Increase poll interval if network is slow
+- Check Pi-hole is not overloaded
+- Verify Consider Away After setting is appropriate
 
 ## Development
 
@@ -113,7 +147,7 @@ pytest
 pytest --cov=custom_components/pihole_device_tracker
 
 # Run specific test
-pytest tests/test_api.py
+pytest tests/test_pihole_connection.py
 ```
 
 ### Code Style
@@ -141,16 +175,8 @@ Contributions are welcome! Please:
 
 ## License
 
-This project is licensed under the MIT License - see LICENSE file for details.
+This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Support
 
-For issues, questions, or suggestions, please open an issue on GitHub.
-
-## Changelog
-
-### v1.0.0
-- Initial release
-- Basic device tracking functionality
-- Home Assistant integration
-- Configuration UI support
+For issues, questions, or suggestions, please open an issue on GitHub: https://github.com/Barma-lej/pihole-device-tracker/issues
