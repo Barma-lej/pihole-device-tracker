@@ -6,29 +6,34 @@ from homeassistant.const import (
     CONF_HOST,
     CONF_PASSWORD,
 )
+
 from .const import (
-    DOMAIN,
-    CONF_SCAN_INTERVAL,
     CONF_AWAY_TIME,
+    CONF_SCAN_INTERVAL,
+    DEFAULT_AWAY_TIME,
     DEFAULT_HOST,
     DEFAULT_PASSWORD,
     DEFAULT_SCAN_INTERVAL,
-    DEFAULT_AWAY_TIME,
+    DOMAIN,
 )
 
-STEP_USER_DATA_SCHEMA = vol.Schema({
-    vol.Required(CONF_HOST, default=DEFAULT_HOST): str,
-    vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD): str,
-    vol.Required(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.All(int, vol.Range(min=5)),
-    vol.Required(CONF_AWAY_TIME, default=DEFAULT_AWAY_TIME): vol.All(int, vol.Range(min=30)),
-})
+STEP_USER_DATA_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_HOST, default=DEFAULT_HOST): str,
+        vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD): str,
+        vol.Required(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.All(
+            int, vol.Range(min=5)
+        ),
+        vol.Required(CONF_AWAY_TIME, default=DEFAULT_AWAY_TIME): vol.All(int, vol.Range(min=30)),
+    }
+)
 
 
 class PiholeDeviceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Pi-hole Device Tracker config flow."""
-    
+
     VERSION = 1
-    
+
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
         if user_input is not None:
@@ -36,7 +41,7 @@ class PiholeDeviceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 title="Pi-hole Device Tracker",
                 data=user_input,
             )
-        
+
         return self.async_show_form(
             step_id="user",
             data_schema=STEP_USER_DATA_SCHEMA,
