@@ -16,7 +16,7 @@ from .const import (
 
 STEP_USER_DATA_SCHEMA = vol.Schema({
     vol.Required(CONF_HOST, default=DEFAULT_HOST): str,
-    vol.Optional(CONF_PASSWORD, default=""): str,
+    vol.Optional(CONF_PASSWORD): str,
     vol.Required(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.All(int, vol.Range(min=5)),
     vol.Required(CONF_AWAY_TIME, default=DEFAULT_AWAY_TIME): vol.All(int, vol.Range(min=30)),
 })

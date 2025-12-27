@@ -27,7 +27,7 @@ PLATFORMS: list[str] = ["sensor", "device_tracker"]
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Pi-hole Device Tracker from a config entry."""
     host = entry.data.get(CONF_HOST, DEFAULT_HOST)
-    password = entry.data.get(CONF_PASSWORD, "")
+    password = entry.data.get(CONF_PASSWORD) or ''
     scan_interval = entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
     away_time = entry.data.get(CONF_AWAY_TIME, DEFAULT_AWAY_TIME)
 
