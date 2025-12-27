@@ -2,21 +2,23 @@ from __future__ import annotations
 
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.const import CONF_HOST
-
+from homeassistant.const import (
+    CONF_HOST,
+    CONF_PASSWORD,
+)
 from .const import (
     DOMAIN,
-    CONF_PASSWORD,
     CONF_SCAN_INTERVAL,
     CONF_AWAY_TIME,
     DEFAULT_HOST,
+    DEFAULT_PASSWORD,
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_AWAY_TIME,
 )
 
 STEP_USER_DATA_SCHEMA = vol.Schema({
     vol.Required(CONF_HOST, default=DEFAULT_HOST): str,
-    vol.Optional(CONF_PASSWORD): str,
+    vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD): str,
     vol.Required(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.All(int, vol.Range(min=5)),
     vol.Required(CONF_AWAY_TIME, default=DEFAULT_AWAY_TIME): vol.All(int, vol.Range(min=30)),
 })

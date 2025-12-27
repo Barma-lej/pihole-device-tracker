@@ -7,11 +7,14 @@ from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-
-from .const import (
-    DOMAIN,
+from homeassistant.const import (
     CONF_HOST,
     CONF_PASSWORD,
+)
+from .const import (
+    DOMAIN,
+    # CONF_HOST,
+    # CONF_PASSWORD,
     CONF_SCAN_INTERVAL,
     CONF_AWAY_TIME,
     DEFAULT_HOST,

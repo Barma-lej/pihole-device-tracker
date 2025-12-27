@@ -3,11 +3,12 @@
 DOMAIN = "pihole_device_tracker"
 
 CONF_AWAY_TIME = "away_time"
-CONF_HOST = "host"
+# CONF_HOST = "host"
 CONF_SCAN_INTERVAL = "scan_interval"
 
 DEFAULT_HOST = "http://pi.hole"
-CONF_PASSWORD = ""  # Password is required for DHCP API access
+DEFAULT_PASSWORD = ""
+# CONF_PASSWORD = ""  # Password is required for DHCP API access
 DEFAULT_SCAN_INTERVAL = 30  # seconds
 DEFAULT_AWAY_TIME = 900  # seconds → 15 min
 
