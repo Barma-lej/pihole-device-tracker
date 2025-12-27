@@ -33,10 +33,16 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
 
     @staticmethod
     def _normalize_host(host: str) -> str:
-        """Normalize host URL - remove http:// and https://."""
+        """Normalize host URL."""
+        # Удаляем существующий протокол
         host = host.replace("https://", "").replace("http://", "").strip()
         if host.endswith("/"):
             host = host[:-1]
+        
+        # Добавляем http:// если нет протокола
+        if not host.startswith("http://") and not host.startswith("https://"):
+            host = "http://" + host
+        
         return host
 
     async def _authenticate(self) -> bool:
