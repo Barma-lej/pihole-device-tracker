@@ -19,10 +19,10 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
     """Coordinator for Pi-hole v6 with authentication."""
 
     def __init__(self, hass: HomeAssistant, host: str, password: str, scan_interval: int):
-        self._host = host.rstrip("/")
+        self._host = self._normalize_host(host)
         self._password = password
         self._session = async_get_clientsession(hass)
-        self._sid: Optional[str] = None  # session ID
+        self._sid: Optional[str] = None
 
         super().__init__(
             hass,
@@ -30,6 +30,14 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
             name="Pi-hole Device Tracker",
             update_interval=timedelta(seconds=scan_interval),
         )
+
+    @staticmethod
+    def _normalize_host(host: str) -> str:
+        """Normalize host URL - remove http:// and https://."""
+        host = host.replace("https://", "").replace("http://", "").strip()
+        if host.endswith("/"):
+            host = host[:-1]
+        return host
 
     async def _authenticate(self) -> bool:
         """Authenticate with Pi-hole v6 and get SID."""
