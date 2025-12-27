@@ -24,8 +24,7 @@ from .const import (
 from .coordinator import PiholeUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
-PLATFORMS: list[str] = ["sensor", "device_tracker"]
-
+PLATFORMS: list[str] = ["device_tracker"]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Pi-hole Device Tracker from a config entry."""
