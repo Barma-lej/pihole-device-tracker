@@ -1,14 +1,21 @@
 """Pi-hole update coordinator."""
+from __future__ import annotations
+
+import asyncio
 import logging
 import re
 from datetime import timedelta
 from typing import Any, Dict, Optional
 
+import aiohttp
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
+    AUTH_ENDPOINT,
+    DEVICES_ENDPOINT,
+    LEASES_ENDPOINT,
     DEFAULT_SSH_PORT,
     DEFAULT_SSH_USERNAME,
 )
@@ -17,7 +24,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
-    """Coordinator for Pi-hole v6 device tracking."""
+    """Coordinator for Pi-hole v6 with authentication and optional ARP monitoring."""
 
     def __init__(
         self,
@@ -32,7 +39,8 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
     ):
         self._host = self._normalize_host(host)
         self._password = password
-        self._scan_interval = scan_interval
+        self._session = async_get_clientsession(hass)
+        self._sid: Optional[str] = None
 
         # SSH опционально
         self._ssh_config = {
@@ -42,7 +50,6 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
             "password": ssh_password,
         } if ssh_host else None
 
-        self._session = async_get_clientsession(hass)
         self._arp_cache: Dict[str, str] = {}
 
         super().__init__(
@@ -62,46 +69,30 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
             host = "http://" + host
         return host
 
-    async def _authenticate(self) -> Optional[str]:
-        """Аутентификация в Pi-hole API."""
-        auth_url = f"{self._host}/api/auth"
-        auth_data = {"password": self._password}
-        
+    async def _authenticate(self) -> bool:
+        """Authenticate with Pi-hole v6 and get SID."""
         try:
-            async with self._session.post(
-                auth_url, json=auth_data, timeout=10
-            ) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    return data.get("session", {}).get("sid")
-                return None
-        except Exception as err:
-            _LOGGER.error(f"Ошибка аутентификации: {err}")
-            return None
-
-    async def _get_devices(self) -> Dict[str, Any]:
-        """Получить устройства из Pi-hole API."""
-        devices_url = f"{self._host}/api/network/devices?max_devices=999&max_addresses=24"
-        
-        try:
-            async with self._session.get(devices_url, timeout=10) as response:
-                if response.status == 200:
-                    return (await response.json()).get("data", {})
-                elif response.status == 401:
-                    sid = await self._authenticate()
-                    if sid:
-                        headers = {"Authorization": f"Bearer {sid}"}
-                        async with self._session.get(devices_url, headers=headers, timeout=10) as resp:
-                            if resp.status == 200:
-                                return (await resp.json()).get("data", {})
-                    _LOGGER.warning("Не удалось аутентифицироваться в Pi-hole")
-                    return {}
+            auth_url = f"{self._host}{AUTH_ENDPOINT}"
+            payload = {"password": self._password}
+            async with self._session.post(auth_url, json=payload, timeout=10) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    self._sid = data.get("session", {}).get("sid")
+                    if self._sid:
+                        _LOGGER.debug("✓ Authenticated with Pi-hole")
+                        return True
+                    else:
+                        _LOGGER.error("No SID in response")
+                        return False
+                elif resp.status == 401:
+                    _LOGGER.error("Authentication failed - wrong password")
+                    return False
                 else:
-                    _LOGGER.error(f"Ошибка получения устройств: {response.status}")
-                    return {}
+                    _LOGGER.error(f"Auth failed: HTTP {resp.status}")
+                    return False
         except Exception as err:
-            _LOGGER.error(f"Ошибка запроса к Pi-hole: {err}")
-            return {}
+            _LOGGER.error(f"Authentication error: {err}")
+            return False
 
     async def _get_arp_table(self) -> Dict[str, str]:
         """Получить ARP-таблицу через SSH (опционально)."""
@@ -111,8 +102,6 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
         ssh_config = self._ssh_config
 
         try:
-            import asyncio
-            
             ssh_cmd = (
                 f"sshpass -p '{ssh_config['password']}' ssh "
                 f"-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "
@@ -151,33 +140,79 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
             return {}
 
     async def _async_update_data(self) -> Dict[str, Any]:
-        """Обновить данные."""
-        devices = await self._get_devices()
-        
-        # ARP опционально — для более надёжного определения IP
-        self._arp_cache = await self._get_arp_table()
+        """Fetch data from Pi-hole v6."""
+        # Аутентификация если нет SID
+        if not self._sid:
+            if not await self._authenticate():
+                raise UpdateFailed("Authentication failed")
 
-        data: Dict[str, Any] = {}
-        
-        for mac, info in devices.items():
-            mac_normalized = mac.lower().replace("-", ":")
-            
-            # Если есть ARP данные, обогащаем информацию об IP
-            if self._arp_cache:
+        headers = {"X-FTL-SID": self._sid}
+        leases_url = f"{self._host}{LEASES_ENDPOINT}"
+        devices_url = f"{self._host}{DEVICES_ENDPOINT}"
+
+        try:
+            async with self._session.get(leases_url, headers=headers, timeout=10) as resp:
+                if resp.status == 401:
+                    _LOGGER.warning("Session expired, re-authenticating")
+                    self._sid = None
+                    return await self._async_update_data()
+                leases_json = await resp.json(content_type=None)
+
+            async with self._session.get(devices_url, headers=headers, timeout=10) as resp:
+                if resp.status == 401:
+                    self._sid = None
+                    return await self._async_update_data()
+                devices_json = await resp.json(content_type=None)
+
+        except (aiohttp.ClientError, asyncio.TimeoutError) as err:
+            raise UpdateFailed(err) from err
+
+        # Обработка данных
+        leases = leases_json.get("leases", [])
+        devices = devices_json.get("devices", [])
+        merged: Dict[str, Dict[str, Any]] = {}
+
+        for lease in leases:
+            mac = lease.get("hwaddr", "").lower()
+            if not mac:
+                continue
+            entry = merged.setdefault(mac, {"ips": set()})
+            entry["ips"].add(lease.get("ip"))
+            if lease.get("name") and lease["name"] != "*":
+                entry["name"] = lease["name"]
+            entry["dhcp_expires"] = lease.get("expires")
+
+        for dev in devices:
+            mac = dev.get("hwaddr", "").lower()
+            if not mac:
+                continue
+            entry = merged.setdefault(mac, {"ips": set()})
+            entry.update({
+                "interface": dev.get("interface"),
+                "first_seen": dev.get("firstSeen"),
+                "last_query": dev.get("lastQuery"),
+                "num_queries": dev.get("numQueries"),
+                "mac_vendor": dev.get("macVendor"),
+            })
+
+            for ip_entry in dev.get("ips", []):
+                if ip := ip_entry.get("ip"):
+                    entry["ips"].add(ip)
+                if not entry.get("name") and (n := ip_entry.get("name")) and n != "*":
+                    entry["name"] = n
+
+        # ARP опционально — обогащаем IP из ARP таблицы
+        self._arp_cache = await self._get_arp_table()
+        if self._arp_cache:
+            for mac, info in merged.items():
                 for ip, arp_mac in self._arp_cache.items():
-                    if arp_mac == mac_normalized:
-                        ips = info.get("ips", [])
-                        if isinstance(ips, str):
-                            ips = [ips]
-                        elif not isinstance(ips, list):
-                            ips = []
-                        if ip not in ips:
-                            ips.append(ip)
-                        info["ips"] = ips
-                        info["arp_ip"] = ip
+                    if arp_mac == mac:
+                        if ip not in info["ips"]:
+                            info["ips"].add(ip)
                         break
             
-            data[mac_normalized] = info
+        for info in merged.values():
+            info["ips"] = ", ".join(sorted(info.get("ips", [])))
 
-        _LOGGER.debug(f"Устройства: {len(data)}")
-        return data
+        _LOGGER.debug(f"Устройства: {len(merged)}")
+        return merged
