@@ -1,4 +1,5 @@
 """Pi-hole update coordinator with ARP monitoring via SSH."""
+import asyncio
 import logging
 import re
 from datetime import timedelta
@@ -46,6 +47,7 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
 
         self._session = async_get_clientsession(hass)
         self._arp_cache: Dict[str, str] = {}
+        self._hass = hass
 
         super().__init__(
             hass,
@@ -83,7 +85,6 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
 
     async def _get_devices(self) -> Dict[str, Any]:
         """Получить список устройств из Pi-hole API."""
-        # Сначала пробуем без аутентификации
         devices_url = f"{self._host}/api/network/devices?max_devices=999&max_addresses=24"
         
         try:
@@ -92,7 +93,6 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
                     data = await response.json()
                     return data.get("data", {})
                 elif response.status == 401:
-                    # Требуется аутентификация
                     sid = await self._authenticate()
                     if sid:
                         headers = {"Authorization": f"Bearer {sid}"}
@@ -116,26 +116,19 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
 
         ssh_config = self._ssh_config
 
-        # Lazy import
-        import asyncssh
-
-        cmd = "arp -n"
-
+        # Запускаем SSH в executor'е, чтобы не блокировать event loop
+        loop = asyncio.get_event_loop()
+        
         try:
-            connect_kwargs = {
-                "host": ssh_config["host"],
-                "port": ssh_config["port"],
-                "username": ssh_config["username"],
-            }
-
-            if ssh_config.get("password"):
-                connect_kwargs["password"] = ssh_config["password"]
-            elif ssh_config.get("key_path"):
-                connect_kwargs["client_keys"] = ssh_config["key_path"]
-
-            async with asyncssh.connect(**connect_kwargs) as conn:
-                result = await conn.run(cmd)
-                arp_output = result.stdout
+            arp_output = await loop.run_in_executor(
+                None,
+                self._ssh_execute,
+                ssh_config["host"],
+                ssh_config["port"],
+                ssh_config["username"],
+                ssh_config.get("password"),
+                ssh_config.get("key_path"),
+            )
 
             # Парсим вывод: IP -> MAC
             arp_map: Dict[str, str] = {}
@@ -163,29 +156,57 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
             _LOGGER.warning(f"Не удалось получить ARP-таблицу: {err}")
             return {}
 
+    def _ssh_execute(
+        self,
+        host: str,
+        port: int,
+        username: str,
+        password: str = None,
+        key_path: str = None,
+    ) -> str:
+        """Выполнить SSH команду в отдельном потоке."""
+        import asyncssh
+
+        # Более безопасный вариант - принять ключ автоматически
+        connect_kwargs = {
+            "host": host,
+            "port": port,
+            "username": username,
+            "host_key_verify": False,  # Не рекомендуется
+        }
+
+        # Или используйте системный known_hosts (по умолчанию)
+        # connect_kwargs = {
+        #     "host": host,
+        #     "port": port,
+        #     "username": username,
+        # }
+
+        if password:
+            connect_kwargs["password"] = password
+        elif key_path:
+            connect_kwargs["client_keys"] = key_path
+
+        with asyncssh.connect(**connect_kwargs) as conn:
+            result = conn.run("arp -n")
+            return result.stdout
+
     async def _async_update_data(self) -> Dict[str, Any]:
         """Обновить данные с Pi-hole API и ARP-таблицы."""
-        # Получаем устройства с Pi-hole
         devices = await self._get_devices()
-        
-        # Получаем ARP-таблицу
         self._arp_cache = await self._get_arp_table()
 
-        # Объединяем данные
         data: Dict[str, Any] = {}
         
         for mac, info in devices.items():
-            # Нормализуем MAC
             mac_normalized = mac.lower().replace("-", ":")
             
-            # Ищем IP в ARP таблице
             arp_ip = None
             for ip, arp_mac in self._arp_cache.items():
                 if arp_mac == mac_normalized:
                     arp_ip = ip
                     break
 
-            # Обогащаем данные
             if arp_ip:
                 ips = info.get("ips", [])
                 if isinstance(ips, str):
