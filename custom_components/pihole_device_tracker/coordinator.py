@@ -1,5 +1,4 @@
 """Pi-hole update coordinator with ARP monitoring via SSH."""
-import asyncio
 import logging
 import re
 from datetime import timedelta
@@ -7,6 +6,7 @@ from typing import Any, Dict, Optional
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.shell_command import async_service_call_from_config
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
@@ -36,13 +36,11 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
         self._password = password
         self._scan_interval = scan_interval
 
-        # SSH конфигурация
         self._ssh_config = {
             "host": ssh_host,
             "port": ssh_port,
             "username": ssh_username,
             "password": ssh_password,
-            "key_path": ssh_key_path,
         }
 
         self._session = async_get_clientsession(hass)
@@ -110,27 +108,51 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
             return {}
 
     async def _get_arp_table(self) -> Dict[str, str]:
-        """Получить ARP-таблицу с Pi-hole сервера по SSH."""
+        """Получить ARP-таблицу с Pi-hole сервера."""
         if not self._ssh_config.get("host"):
             return {}
 
         ssh_config = self._ssh_config
 
-        # Запускаем SSH в executor'е, чтобы не блокировать event loop
-        loop = asyncio.get_event_loop()
-        
-        try:
-            arp_output = await loop.run_in_executor(
-                None,
-                self._ssh_execute,
-                ssh_config["host"],
-                ssh_config["port"],
-                ssh_config["username"],
-                ssh_config.get("password"),
-                ssh_config.get("key_path"),
-            )
+        # Формируем SSH команду
+        ssh_cmd = (
+            f"ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "
+            f"-p {ssh_config['port']} {ssh_config['username']}@{ssh_config['host']} 'arp -n'"
+        )
 
-            # Парсим вывод: IP -> MAC
+        try:
+            # Выполняем через shell_command (если настроено)
+            response = await self._hass.services.async_call(
+                "shell_command",
+                "get_arp_pi",
+                blocking=True,
+                timeout=30
+            )
+            
+            # Получаем результат из контекста (недоступно напрямую)
+            # Поэтому используем asyncio.create_subprocess_exec
+            raise Exception("Используем subprocess")
+            
+        except Exception:
+            # Запасной вариант - напрямую через subprocess
+            import asyncio
+            
+            cmd = f"ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p {ssh_config['port']} {ssh_config['username']}@{ssh_config['host']} 'arp -n'"
+            
+            proc = await asyncio.create_subprocess_shell(
+                cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+            stdout, stderr = await proc.communicate()
+
+            if proc.returncode != 0:
+                _LOGGER.warning(f"SSH ошибка: {stderr.decode()}")
+                return {}
+            
+            arp_output = stdout.decode()
+
+            # Парсим вывод
             arp_map: Dict[str, str] = {}
             for line in arp_output.strip().split("\n"):
                 if line.startswith("Address") or "incomplete" in line:
@@ -151,45 +173,6 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
 
             _LOGGER.debug(f"ARP таблица получена: {len(arp_map)} записей")
             return arp_map
-
-        except Exception as err:
-            _LOGGER.warning(f"Не удалось получить ARP-таблицу: {err}")
-            return {}
-
-    def _ssh_execute(
-        self,
-        host: str,
-        port: int,
-        username: str,
-        password: str = None,
-        key_path: str = None,
-    ) -> str:
-        """Выполнить SSH команду в отдельном потоке."""
-        import asyncssh
-
-        # Более безопасный вариант - принять ключ автоматически
-        connect_kwargs = {
-            "host": host,
-            "port": port,
-            "username": username,
-            "host_key_verify": False,  # Не рекомендуется
-        }
-
-        # Или используйте системный known_hosts (по умолчанию)
-        # connect_kwargs = {
-        #     "host": host,
-        #     "port": port,
-        #     "username": username,
-        # }
-
-        if password:
-            connect_kwargs["password"] = password
-        elif key_path:
-            connect_kwargs["client_keys"] = key_path
-
-        with asyncssh.connect(**connect_kwargs) as conn:
-            result = conn.run("arp -n")
-            return result.stdout
 
     async def _async_update_data(self) -> Dict[str, Any]:
         """Обновить данные с Pi-hole API и ARP-таблицы."""
