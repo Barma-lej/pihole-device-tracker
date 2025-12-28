@@ -89,7 +89,7 @@ class PiholeTracker(CoordinatorEntity, TrackerEntity):
 
         # Формируем имя: name → IP → MAC + _pihole
         device_name = self._get_device_name()
-        self._attr_name = f"{device_name}_pihole"
+        self._attr_name = f"{device_name} pihole"
 
         # unique_id: safe_name + 4 символа MAC + pihole
         safe_name = self._sanitize_for_entity_id(device_name)
