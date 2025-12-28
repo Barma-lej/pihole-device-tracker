@@ -9,21 +9,20 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
-    CONF_AWAY_TIME,
-    CONF_HOST,
-    CONF_PASSWORD,
-    CONF_SCAN_INTERVAL,
-    CONF_SSH_HOST,
-    CONF_SSH_PASSWORD,
-    CONF_SSH_PORT,
-    CONF_SSH_USERNAME,
-    CONF_SSH_KEY_PATH,
-    DEFAULT_AWAY_TIME,
-    DEFAULT_HOST,
-    DEFAULT_SCAN_INTERVAL,
+    # CONF_AWAY_TIME,
+    # CONF_PASSWORD,
+    # CONF_SCAN_INTERVAL,
+    # CONF_SSH_HOST,
+    # CONF_SSH_PASSWORD,
+    # CONF_SSH_PORT,
+    # CONF_SSH_USERNAME,
+    # CONF_SSH_KEY_PATH,
+    # DEFAULT_AWAY_TIME,
+    # DEFAULT_HOST,
+    # DEFAULT_SCAN_INTERVAL,
     DEFAULT_SSH_PORT,
     DEFAULT_SSH_USERNAME,
-    DOMAIN,
+    # DOMAIN,
 )
 
 _LOGGER = logging.getLogger(__name__)
