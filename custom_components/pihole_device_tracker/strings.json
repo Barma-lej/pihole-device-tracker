@@ -11,43 +11,41 @@
           "away_time": "Consider Away After (seconds)"
         },
         "data_description": {
-          "host": "IP address or hostname of your Pi-hole (e.g., 192.168.1.100 or pi.hole)",
+          "host": "IP address or hostname of your Pi-hole",
           "password": "Leave empty if no password is set",
-          "scan_interval": "How often to check Pi-hole for device updates (minimum 5 seconds)",
-          "away_time": "Time without DNS activity before marking device as away (900 seconds = 15 minutes)"
+          "scan_interval": "How often to check for device updates",
+          "away_time": "Time without activity before marking as away"
         }
       }
     },
     "error": {
-      "cannot_connect": "Failed to connect to Pi-hole. Check the host and network connectivity.",
-      "unknown": "An unexpected error occurred. Check the logs."
+      "cannot_connect": "Failed to connect to Pi-hole",
+      "unknown": "An unexpected error occurred"
     },
     "abort": {
-      "already_configured": "This Pi-hole instance is already configured."
+      "already_configured": "This Pi-hole instance is already configured"
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Update Pi-hole Device Tracker Options",
-        "description": "Configure SSH access to Pi-hole for ARP table monitoring",
+        "title": "Pi-hole Device Tracker Options",
+        "description": "SSH is optional — improves IP detection reliability",
         "data": {
-          "ssh_host": "SSH Host (Pi-hole IP)",
+          "ssh_host": "SSH Host (optional)",
           "ssh_port": "SSH Port",
           "ssh_username": "SSH Username",
           "ssh_password": "SSH Password",
-          "ssh_key_path": "SSH Private Key Path",
           "scan_interval": "Poll Interval (seconds)",
           "away_time": "Consider Away After (seconds)"
         },
         "data_description": {
-          "ssh_host": "IP address of your Raspberry Pi (e.g., 192.168.8.100)",
+          "ssh_host": "Raspberry Pi IP address for ARP table monitoring",
           "ssh_port": "SSH port (default 22)",
-          "ssh_username": "Username for SSH connection (e.g., pi)",
-          "ssh_password": "Password for SSH (leave empty if using key)",
-          "ssh_key_path": "Path to private key file (leave empty if using password)",
-          "scan_interval": "How often to check Pi-hole for device updates",
-          "away_time": "Time without DNS activity before marking device as away"
+          "ssh_username": "SSH username (e.g., pi)",
+          "ssh_password": "SSH password",
+          "scan_interval": "How often to check for updates",
+          "away_time": "Time without activity before marking as away"
         }
       }
     }

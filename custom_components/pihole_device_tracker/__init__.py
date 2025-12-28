@@ -1,31 +1,26 @@
 """Pi-hole Device Tracker integration."""
-
 from __future__ import annotations
 
 import logging
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_PASSWORD,
-)
+from homeassistant.const import CONF_HOST, CONF_PASSWORD
 from homeassistant.core import HomeAssistant
 
-from .const import (  # CONF_HOST,; CONF_PASSWORD,
+from .const import (
     CONF_AWAY_TIME,
     CONF_SCAN_INTERVAL,
+    CONF_SSH_HOST,
+    CONF_SSH_PORT,
+    CONF_SSH_USERNAME,
+    CONF_SSH_PASSWORD,
     DEFAULT_AWAY_TIME,
     DEFAULT_HOST,
     DEFAULT_SCAN_INTERVAL,
-    DOMAIN,
-    CONF_SSH_HOST,
-    CONF_SSH_KEY_PATH,
-    CONF_SSH_PASSWORD,
-    CONF_SSH_PORT,
-    CONF_SSH_USERNAME,
     DEFAULT_SSH_PORT,
     DEFAULT_SSH_USERNAME,
+    DOMAIN,
 )
 from .coordinator import PiholeUpdateCoordinator
 
@@ -40,12 +35,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     scan_interval = entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
     away_time = entry.data.get(CONF_AWAY_TIME, DEFAULT_AWAY_TIME)
 
-    # SSH настройки из options
+    # SSH настройки (опционально)
     ssh_host = entry.options.get(CONF_SSH_HOST)
     ssh_port = entry.options.get(CONF_SSH_PORT, DEFAULT_SSH_PORT)
     ssh_username = entry.options.get(CONF_SSH_USERNAME, DEFAULT_SSH_USERNAME)
     ssh_password = entry.options.get(CONF_SSH_PASSWORD)
-    ssh_key_path = entry.options.get(CONF_SSH_KEY_PATH)
 
     coordinator = PiholeUpdateCoordinator(
         hass, 
@@ -56,7 +50,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         ssh_port=ssh_port,
         ssh_username=ssh_username,
         ssh_password=ssh_password,
-        ssh_key_path=ssh_key_path,
     )
     await coordinator.async_config_entry_first_refresh()
 
