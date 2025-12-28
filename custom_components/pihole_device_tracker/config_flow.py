@@ -66,7 +66,8 @@ class PiholeOptionsFlowHandler(config_entries.OptionsFlow):
     """Options flow handler."""
     
     def __init__(self, config_entry):
-        self.config_entry = config_entry
+        # Используем _config_entry, чтобы не конфликтовать со свойством родителя
+        self._config_entry = config_entry
     
     async def async_step_init(self, user_input=None):
         """Manage options."""
@@ -76,10 +77,11 @@ class PiholeOptionsFlowHandler(config_entries.OptionsFlow):
                 data=user_input,
             )
         
+        # Используем self._config_entry вместо self.config_entry
         schema = STEP_SSH_DATA_SCHEMA.extend({
-            vol.Required(CONF_SCAN_INTERVAL, default=self.config_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)): 
+            vol.Required(CONF_SCAN_INTERVAL, default=self._config_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)): 
                 vol.All(int, vol.Range(min=5)),
-            vol.Required(CONF_AWAY_TIME, default=self.config_entry.data.get(CONF_AWAY_TIME, DEFAULT_AWAY_TIME)): 
+            vol.Required(CONF_AWAY_TIME, default=self._config_entry.data.get(CONF_AWAY_TIME, DEFAULT_AWAY_TIME)): 
                 vol.All(int, vol.Range(min=30)),
         })
         
