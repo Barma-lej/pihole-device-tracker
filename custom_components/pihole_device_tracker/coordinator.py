@@ -9,23 +9,12 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
-    # CONF_AWAY_TIME,
-    # CONF_PASSWORD,
-    # CONF_SCAN_INTERVAL,
-    # CONF_SSH_HOST,
-    # CONF_SSH_PASSWORD,
-    # CONF_SSH_PORT,
-    # CONF_SSH_USERNAME,
-    # CONF_SSH_KEY_PATH,
-    # DEFAULT_AWAY_TIME,
-    # DEFAULT_HOST,
-    # DEFAULT_SCAN_INTERVAL,
     DEFAULT_SSH_PORT,
     DEFAULT_SSH_USERNAME,
-    # DOMAIN,
 )
 
 _LOGGER = logging.getLogger(__name__)
+
 
 class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
     """Coordinator for Pi-hole v6 with ARP monitoring via SSH."""
@@ -56,7 +45,6 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
         }
 
         self._session = async_get_clientsession(hass)
-        self._sid: Optional[str] = None
         self._arp_cache: Dict[str, str] = {}
 
         super().__init__(
@@ -76,6 +64,51 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
             host = "http://" + host
         return host
 
+    async def _authenticate(self) -> Optional[str]:
+        """Аутентификация в Pi-hole API и получение SID."""
+        auth_url = f"{self._host}/api/auth"
+        auth_data = {"password": self._password}
+        
+        try:
+            async with self._session.post(
+                auth_url, json=auth_data, timeout=10
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    return data.get("session", {}).get("sid")
+                return None
+        except Exception as err:
+            _LOGGER.error(f"Ошибка аутентификации: {err}")
+            return None
+
+    async def _get_devices(self) -> Dict[str, Any]:
+        """Получить список устройств из Pi-hole API."""
+        # Сначала пробуем без аутентификации
+        devices_url = f"{self._host}/api/network/devices?max_devices=999&max_addresses=24"
+        
+        try:
+            async with self._session.get(devices_url, timeout=10) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    return data.get("data", {})
+                elif response.status == 401:
+                    # Требуется аутентификация
+                    sid = await self._authenticate()
+                    if sid:
+                        headers = {"Authorization": f"Bearer {sid}"}
+                        async with self._session.get(devices_url, headers=headers, timeout=10) as resp:
+                            if resp.status == 200:
+                                dev_data = await resp.json()
+                                return dev_data.get("data", {})
+                    _LOGGER.warning("Не удалось аутентифицироваться в Pi-hole")
+                    return {}
+                else:
+                    _LOGGER.error(f"Ошибка получения устройств: {response.status}")
+                    return {}
+        except Exception as err:
+            _LOGGER.error(f"Ошибка запроса к Pi-hole: {err}")
+            return {}
+
     async def _get_arp_table(self) -> Dict[str, str]:
         """Получить ARP-таблицу с Pi-hole сервера по SSH."""
         if not self._ssh_config.get("host"):
@@ -83,7 +116,7 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
 
         ssh_config = self._ssh_config
 
-        # Lazy import - только когда реально нужен
+        # Lazy import
         import asyncssh
 
         cmd = "arp -n"
@@ -132,24 +165,40 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
 
     async def _async_update_data(self) -> Dict[str, Any]:
         """Обновить данные с Pi-hole API и ARP-таблицы."""
-        # Ваш существующий код получения данных с Pi-hole API
-        data: Dict[str, Any] = {}
-
+        # Получаем устройства с Pi-hole
+        devices = await self._get_devices()
+        
         # Получаем ARP-таблицу
         self._arp_cache = await self._get_arp_table()
 
-        # Обогащаем данные устройств информацией из ARP
-        for mac, info in data.items():
-            ips = info.get("ips", [])
-            if isinstance(ips, str):
-                ips = [ips]
-
+        # Объединяем данные
+        data: Dict[str, Any] = {}
+        
+        for mac, info in devices.items():
+            # Нормализуем MAC
+            mac_normalized = mac.lower().replace("-", ":")
+            
+            # Ищем IP в ARP таблице
+            arp_ip = None
             for ip, arp_mac in self._arp_cache.items():
-                if arp_mac.replace(":", "-").lower() == mac.replace(":", "-").lower():
-                    if ip not in ips:
-                        ips.append(ip)
-                    info["ips"] = ips
-                    info["arp_ip"] = ip
+                if arp_mac == mac_normalized:
+                    arp_ip = ip
                     break
 
+            # Обогащаем данные
+            if arp_ip:
+                ips = info.get("ips", [])
+                if isinstance(ips, str):
+                    ips = [ips]
+                elif not isinstance(ips, list):
+                    ips = []
+                
+                if arp_ip not in ips:
+                    ips.append(arp_ip)
+                info["ips"] = ips
+                info["arp_ip"] = arp_ip
+            
+            data[mac_normalized] = info
+
+        _LOGGER.debug(f"Устройства получены: {len(data)}")
         return data
