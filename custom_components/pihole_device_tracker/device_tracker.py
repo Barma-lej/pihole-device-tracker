@@ -57,12 +57,13 @@ class PiholeTracker(CoordinatorEntity, TrackerEntity):
         # 1. Пробуем name
         name = info.get(ATTR_NAME)
         if name and name != "*" and name.strip():
-            return name.strip()
+            # Удаляем .local и другие суффиксы домена
+            name = name.replace(".local", "").strip()
+            return name
 
         # 2. Пробуем IP
         ips = info.get(ATTR_IPS)
         if ips:
-            # ips может быть списком или строкой
             if isinstance(ips, list) and ips:
                 return ips[0]
             elif isinstance(ips, str) and ips:
