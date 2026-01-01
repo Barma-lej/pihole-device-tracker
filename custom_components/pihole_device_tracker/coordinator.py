@@ -104,12 +104,25 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
                 port=port,
                 username=username,
                 password=password,
-                known_hosts=None,
+                known_hosts=None,  # Отключаем проверку
+                options=[
+                    asyncssh.SSHClientOption(
+                        'StrictHostKeyChecking', 'no'
+                    ),
+                    asyncssh.SSHClientOption(
+                        'UserKnownHostsFile', '/dev/null'
+                    ),
+                ],
             ) as conn:
                 result = await conn.run("arp -n")
-                return result.stdout
+                return result.stdout, result.stderr, result.exit_status
 
-        return asyncio.run(ssh_task())
+        stdout, stderr, exit_status = asyncio.run(ssh_task())
+        
+        _LOGGER.debug(f"ARP SSH exit_status: {exit_status}")
+        _LOGGER.debug(f"ARP SSH stderr: {stderr}")
+        
+        return stdout
 
     async def _get_arp_table(self) -> Dict[str, str]:
         """Получить ARP-таблицу через SSH (опционально)."""
