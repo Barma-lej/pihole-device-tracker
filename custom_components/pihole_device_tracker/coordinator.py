@@ -104,12 +104,11 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
                 port=port,
                 username=username,
                 password=password,
-                known_hosts=None,  # Отключаем проверку host key
+                known_hosts=None,
             ) as conn:
                 result = await conn.run("arp -n")
                 return result.stdout
 
-        # asyncio.run() запускает асинхронный код синхронно
         return asyncio.run(ssh_task())
 
     async def _get_arp_table(self) -> Dict[str, str]:
@@ -122,7 +121,6 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
         _LOGGER.debug(f"ARP: Подключение к {ssh_config['username']}@{ssh_config['host']}")
 
         try:
-            # Выполняем SSH в executor'е
             loop = asyncio.get_running_loop()
             stdout = await loop.run_in_executor(
                 None,
@@ -133,6 +131,8 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
                 ssh_config["password"],
             )
 
+            _LOGGER.debug(f"ARP raw output:\n{stdout[:500]}")
+            
             arp_map: Dict[str, str] = {}
             count = 0
             for line in stdout.strip().split("\n"):
@@ -146,7 +146,7 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
                             ip = parts[0]
                             arp_map[ip] = mac
                             count += 1
-                            break
+                            _LOGGER.debug(f"ARP: найден {ip} -> {mac}")
 
             _LOGGER.debug(f"ARP: Получено {count} записей")
             return arp_map
