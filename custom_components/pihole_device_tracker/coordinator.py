@@ -106,8 +106,8 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
                 password=password,
                 known_hosts=None
             ) as conn:
-                # Используем полный путь /usr/sbin/arp
-                result = await conn.run("/usr/sbin/arp -n")
+                # Используем ip neigh show nud reachable - только свежие записи!
+                result = await conn.run("ip neigh show nud reachable")
                 return result.stdout, result.stderr, result.exit_status
 
         stdout, stderr, exit_status = asyncio.run(ssh_task())
@@ -118,7 +118,7 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
         return stdout
 
     async def _get_arp_table(self) -> Dict[str, str]:
-        """Получить ARP-таблицу через SSH (опционально)."""
+        """Получить ARP-таблицу (только REACHABLE) через SSH."""
         if not self._ssh_config:
             _LOGGER.debug("ARP: SSH не настроен (опционально)")
             return {}
@@ -143,13 +143,14 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
             count = 0
             for line in stdout.strip().split("\n"):
                 line = line.strip()
-                if not line or line.startswith("Address"):
+                if not line:
                     continue
                 
+                # Формат: "IP dev IFACE lladdr MAC STATE"
                 parts = line.split()
-                if len(parts) >= 3:
+                if len(parts) >= 5:
                     ip = parts[0]
-                    # MAC - третий элемент (parts[2])
+                    # MAC в 4-й позиции
                     mac = None
                     for part in parts:
                         if re.match(r"^([0-9a-f]{2}[:-]){5}[0-9a-f]{2}$", part.lower()):
@@ -160,9 +161,9 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
                         mac_normalized = mac.replace("-", ":")
                         arp_map[ip] = mac_normalized
                         count += 1
-                        _LOGGER.debug(f"ARP: найден {ip} -> {mac_normalized}")
+                        _LOGGER.debug(f"ARP REACHABLE: {ip} -> {mac_normalized}")
 
-            _LOGGER.debug(f"ARP: Получено {count} записей")
+            _LOGGER.debug(f"ARP: Получено {count} REACHABLE записей")
             return arp_map
 
         except Exception as err:
