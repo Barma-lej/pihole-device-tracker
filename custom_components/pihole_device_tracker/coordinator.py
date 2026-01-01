@@ -94,33 +94,44 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
             _LOGGER.error(f"Authentication error: {err}")
             return False
 
+    def _ssh_get_arp_sync(self, host: str, port: int, username: str, password: str) -> str:
+        """Синхронный SSH запрос — выполняется в executor'е."""
+        import asyncssh
+
+        with asyncssh.connect(
+            host=host,
+            port=port,
+            username=username,
+            password=password,
+            known_hosts=None,  # Отключаем проверку host key
+        ) as conn:
+            result = conn.run("arp -n")
+            return result.stdout
+
     async def _get_arp_table(self) -> Dict[str, str]:
         """Получить ARP-таблицу через SSH (опционально)."""
         if not self._ssh_config:
+            _LOGGER.debug("ARP: SSH не настроен (опционально)")
             return {}
 
         ssh_config = self._ssh_config
+        _LOGGER.debug(f"ARP: Подключение к {ssh_config['username']}@{ssh_config['host']}")
 
         try:
-            ssh_cmd = (
-                f"sshpass -p '{ssh_config['password']}' ssh "
-                f"-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "
-                f"-p {ssh_config['port']} {ssh_config['username']}@{ssh_config['host']} 'arp -n'"
+            # Выполняем SSH в executor'е — не блокирует event loop
+            loop = asyncio.get_running_loop()
+            stdout = await loop.run_in_executor(
+                None,
+                self._ssh_get_arp_sync,
+                ssh_config["host"],
+                ssh_config["port"],
+                ssh_config["username"],
+                ssh_config["password"],
             )
 
-            proc = await asyncio.create_subprocess_shell(
-                ssh_cmd,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE
-            )
-            stdout, stderr = await proc.communicate()
-
-            if proc.returncode != 0:
-                _LOGGER.warning(f"SSH ошибка: {stderr.decode()}")
-                return {}
-            
             arp_map: Dict[str, str] = {}
-            for line in stdout.decode().strip().split("\n"):
+            count = 0
+            for line in stdout.strip().split("\n"):
                 if line.startswith("Address") or "incomplete" in line:
                     continue
                 parts = line.split()
@@ -130,18 +141,18 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
                             mac = part.lower().replace("-", ":")
                             ip = parts[0]
                             arp_map[ip] = mac
+                            count += 1
                             break
 
-            _LOGGER.debug(f"ARP таблица: {len(arp_map)} записей")
+            _LOGGER.debug(f"ARP: Получено {count} записей")
             return arp_map
 
         except Exception as err:
-            _LOGGER.warning(f"Не удалось получить ARP-таблицу: {err}")
+            _LOGGER.warning(f"ARP: Ошибка получения - {err}")
             return {}
 
     async def _async_update_data(self) -> Dict[str, Any]:
         """Fetch data from Pi-hole v6."""
-        # Аутентификация если нет SID
         if not self._sid:
             if not await self._authenticate():
                 raise UpdateFailed("Authentication failed")
@@ -201,16 +212,19 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
                 if not entry.get("name") and (n := ip_entry.get("name")) and n != "*":
                     entry["name"] = n
 
-        # ARP опционально — обогащаем IP из ARP таблицы
+        # ARP опционально
         self._arp_cache = await self._get_arp_table()
         if self._arp_cache:
+            arp_count = 0
             for mac, info in merged.items():
                 for ip, arp_mac in self._arp_cache.items():
                     if arp_mac == mac:
                         if ip not in info["ips"]:
                             info["ips"].add(ip)
-                        break
-            
+                            arp_count += 1
+            if arp_count > 0:
+                _LOGGER.debug(f"ARP: Обогащено {arp_count} устройств")
+
         for info in merged.values():
             info["ips"] = ", ".join(sorted(info.get("ips", [])))
 
