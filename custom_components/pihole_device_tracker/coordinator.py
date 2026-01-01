@@ -147,18 +147,15 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
                     continue
                 
                 # Формат: "IP dev IFACE lladdr MAC STATE"
+                # Пример: 192.168.8.254 dev eth0 lladdr 1c:69:7a:63:f7:b3 REACHABLE
                 parts = line.split()
                 if len(parts) >= 5:
                     ip = parts[0]
-                    # MAC в 4-й позиции
-                    mac = None
-                    for part in parts:
-                        if re.match(r"^([0-9a-f]{2}[:-]){5}[0-9a-f]{2}$", part.lower()):
-                            mac = part.lower()
-                            break
+                    # MAC в 4-й позиции (индекс 4)
+                    mac = parts[4] if re.match(r"^([0-9a-f]{2}[:-]){5}[0-9a-f]{2}$", parts[4].lower()) else None
                     
                     if mac:
-                        mac_normalized = mac.replace("-", ":")
+                        mac_normalized = mac.lower().replace("-", ":")
                         arp_map[ip] = mac_normalized
                         count += 1
                         _LOGGER.debug(f"ARP REACHABLE: {ip} -> {mac_normalized}")
