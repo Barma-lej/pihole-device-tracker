@@ -98,16 +98,28 @@ class PiholeTracker(CoordinatorEntity, TrackerEntity):
 
         _LOGGER.debug(f"Tracker: MAC={mac}, name={device_name}, unique_id={self._attr_unique_id}")
 
-    @property
     def is_connected(self) -> bool:
+        """Определить, дома ли устройство."""
         if self._mac not in self.coordinator.data:
             return False
 
-        last = self.coordinator.data[self._mac].get(ATTR_LAST_QUERY)
+        info = self.coordinator.data[self._mac]
+        now_ts = datetime.now(timezone.utc).timestamp()
+
+        # 1. Если любой IP устройства есть в ARP кэше координатора — дома
+        ips = info.get("ips", "")
+        if ips:
+            for ip in ips.split(", "):
+                ip = ip.strip()
+                if ip in getattr(self.coordinator, '_arp_cache', {}):
+                    return True
+        
+        # 2. Иначе проверяем время последнего DNS запроса
+        last = info.get(ATTR_LAST_QUERY)
         if not isinstance(last, (int, float)):
             return False
 
-        return (datetime.now(timezone.utc).timestamp() - last) <= self._away
+        return (now_ts - last) <= self._away
 
     @property
     def state(self) -> str:
