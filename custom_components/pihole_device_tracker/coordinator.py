@@ -95,18 +95,22 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
             return False
 
     def _ssh_get_arp_sync(self, host: str, port: int, username: str, password: str) -> str:
-        """Синхронный SSH запрос — выполняется в executor'е."""
+        """Синхронный SSH запрос через asyncio.run()."""
         import asyncssh
 
-        with asyncssh.connect(
-            host=host,
-            port=port,
-            username=username,
-            password=password,
-            known_hosts=None,  # Отключаем проверку host key
-        ) as conn:
-            result = conn.run("arp -n")
-            return result.stdout
+        async def ssh_task():
+            async with asyncssh.connect(
+                host=host,
+                port=port,
+                username=username,
+                password=password,
+                known_hosts=None,  # Отключаем проверку host key
+            ) as conn:
+                result = await conn.run("arp -n")
+                return result.stdout
+
+        # asyncio.run() запускает асинхронный код синхронно
+        return asyncio.run(ssh_task())
 
     async def _get_arp_table(self) -> Dict[str, str]:
         """Получить ARP-таблицу через SSH (опционально)."""
@@ -118,7 +122,7 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
         _LOGGER.debug(f"ARP: Подключение к {ssh_config['username']}@{ssh_config['host']}")
 
         try:
-            # Выполняем SSH в executor'е — не блокирует event loop
+            # Выполняем SSH в executor'е
             loop = asyncio.get_running_loop()
             stdout = await loop.run_in_executor(
                 None,
