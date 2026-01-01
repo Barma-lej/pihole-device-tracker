@@ -3,6 +3,8 @@ from __future__ import annotations
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PASSWORD
+import logging
+
 from .const import (
     DOMAIN,
     CONF_AWAY_TIME,
@@ -18,6 +20,8 @@ from .const import (
     DEFAULT_SSH_PORT,
     DEFAULT_SSH_USERNAME,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 STEP_USER_DATA_SCHEMA = vol.Schema({
     vol.Required(CONF_HOST, default=DEFAULT_HOST): str,
@@ -66,14 +70,32 @@ class PiholeOptionsFlowHandler(config_entries.OptionsFlow):
     async def async_step_init(self, user_input=None):
         """Manage options."""
         if user_input is not None:
+            _LOGGER.debug(f"Saving options: {user_input}")
             return self.async_create_entry(data=user_input)
         
-        schema = STEP_SSH_DATA_SCHEMA.extend({
+        # Получаем текущие options или пустой словарь
+        options = self._config_entry.options or {}
+        data = self._config_entry.data
+        
+        _LOGGER.debug(f"Loading options: {options}")
+        _LOGGER.debug(f"Loading data: {data}")
+        
+        schema = vol.Schema({
+            # SSH настройки - из options (куда они сохраняются)
+            vol.Optional(CONF_SSH_HOST, 
+                default=options.get(CONF_SSH_HOST, "")): str,
+            vol.Optional(CONF_SSH_PORT, 
+                default=options.get(CONF_SSH_PORT, data.get(CONF_SSH_PORT, DEFAULT_SSH_PORT))): int,
+            vol.Optional(CONF_SSH_USERNAME, 
+                default=options.get(CONF_SSH_USERNAME, data.get(CONF_SSH_USERNAME, DEFAULT_SSH_USERNAME))): str,
+            vol.Optional(CONF_SSH_PASSWORD, 
+                default=options.get(CONF_SSH_PASSWORD, "")): str,
+            # Основные настройки - из data или options
             vol.Required(CONF_SCAN_INTERVAL, 
-                default=self._config_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)): 
+                default=options.get(CONF_SCAN_INTERVAL, data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))): 
                 vol.All(int, vol.Range(min=5)),
             vol.Required(CONF_AWAY_TIME, 
-                default=self._config_entry.data.get(CONF_AWAY_TIME, DEFAULT_AWAY_TIME)): 
+                default=options.get(CONF_AWAY_TIME, data.get(CONF_AWAY_TIME, DEFAULT_AWAY_TIME))): 
                 vol.All(int, vol.Range(min=30)),
         })
         
