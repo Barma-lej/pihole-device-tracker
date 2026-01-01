@@ -104,15 +104,7 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
                 port=port,
                 username=username,
                 password=password,
-                known_hosts=None,  # Отключаем проверку
-                options=[
-                    asyncssh.SSHClientOption(
-                        'StrictHostKeyChecking', 'no'
-                    ),
-                    asyncssh.SSHClientOption(
-                        'UserKnownHostsFile', '/dev/null'
-                    ),
-                ],
+                known_hosts=None
             ) as conn:
                 result = await conn.run("arp -n")
                 return result.stdout, result.stderr, result.exit_status
