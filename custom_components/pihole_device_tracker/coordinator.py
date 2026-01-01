@@ -106,7 +106,8 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
                 password=password,
                 known_hosts=None
             ) as conn:
-                result = await conn.run("arp -n")
+                # Используем полный путь /usr/sbin/arp
+                result = await conn.run("/usr/sbin/arp -n")
                 return result.stdout, result.stderr, result.exit_status
 
         stdout, stderr, exit_status = asyncio.run(ssh_task())
@@ -142,27 +143,20 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
             count = 0
             for line in stdout.strip().split("\n"):
                 line = line.strip()
-                
-                # Пропускаем заголовок и incomplete
-                if not line or line.startswith("Address") or "incomplete" in line:
+                if not line or line.startswith("Address"):
                     continue
                 
                 parts = line.split()
                 if len(parts) >= 3:
                     ip = parts[0]
-                    # MAC - третье поле (часть[2]) или часть[2] может быть "ether"
+                    # MAC - третий элемент (parts[2])
                     mac = None
-                    
-                    # Вариант 1: "IP HWtype HWaddress Iface"
-                    # 192.168.8.25 ether 02:7b:27:ab:bc:a5 C eth0
-                    if parts[1].lower() == "ether" and re.match(r"^[0-9a-f:]+$", parts[2].lower()):
-                        mac = parts[2].lower()
-                    # Вариант 2: MAC в части[2] напрямую
-                    elif re.match(r"^([0-9a-f]{2}[:-]){5}[0-9a-f]{2}$", parts[2].lower()):
-                        mac = parts[2].lower()
+                    for part in parts:
+                        if re.match(r"^([0-9a-f]{2}[:-]){5}[0-9a-f]{2}$", part.lower()):
+                            mac = part.lower()
+                            break
                     
                     if mac:
-                        # Нормализуем MAC
                         mac_normalized = mac.replace("-", ":")
                         arp_map[ip] = mac_normalized
                         count += 1
