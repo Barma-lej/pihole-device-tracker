@@ -106,8 +106,11 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
                 password=password,
                 known_hosts=None
             ) as conn:
-                # Используем ip neigh show nud reachable - только свежие записи!
-                result = await conn.run("ip neigh show nud reachable")
+                # REACHABLE или DELAY — только активные соединения
+                result = await conn.run(
+                    "ip neigh show nud reachable nud delay nud probe nud stale 2>/dev/null | "
+                    "awk '$6 ~ /^[RD]/{print}'"
+                )
                 return result.stdout, result.stderr, result.exit_status
 
         stdout, stderr, exit_status = asyncio.run(ssh_task())
@@ -118,7 +121,7 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
         return stdout
 
     async def _get_arp_table(self) -> Dict[str, str]:
-        """Получить ARP-таблицу (только REACHABLE) через SSH."""
+        """Получить ARP-таблицу (только свежие REACHABLE) через SSH."""
         if not self._ssh_config:
             _LOGGER.debug("ARP: SSH не настроен (опционально)")
             return {}
@@ -147,20 +150,24 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
                     continue
                 
                 # Формат: "IP dev IFACE lladdr MAC STATE"
-                # Пример: 192.168.8.254 dev eth0 lladdr 1c:69:7a:63:f7:b3 REACHABLE
                 parts = line.split()
                 if len(parts) >= 5:
                     ip = parts[0]
-                    # MAC в 4-й позиции (индекс 4)
+                    state = parts[-1]  # REACHABLE, DELAY, STALE, etc.
+                    
+                    # Принимаем только REACHABLE и DELAY
+                    if state not in ("REACHABLE", "DELAY"):
+                        continue
+                    
                     mac = parts[4] if re.match(r"^([0-9a-f]{2}[:-]){5}[0-9a-f]{2}$", parts[4].lower()) else None
                     
                     if mac:
                         mac_normalized = mac.lower().replace("-", ":")
                         arp_map[ip] = mac_normalized
                         count += 1
-                        _LOGGER.debug(f"ARP REACHABLE: {ip} -> {mac_normalized}")
+                        _LOGGER.debug(f"ARP {state}: {ip} -> {mac_normalized}")
 
-            _LOGGER.debug(f"ARP: Получено {count} REACHABLE записей")
+            _LOGGER.debug(f"ARP: Получено {count} активных записей")
             return arp_map
 
         except Exception as err:
