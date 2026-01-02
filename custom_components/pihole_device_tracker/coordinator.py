@@ -248,6 +248,9 @@ class PiholeUpdateCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
             if arp_count > 0:
                 _LOGGER.debug(f"ARP: Обогащено {arp_count} устройств")
 
+        # Добавил _LOGGER.warning для отладки:
+        _LOGGER.warning(f"Tracker {self._mac}: ...")
+
         for info in merged.values():
             info["ips"] = ", ".join(sorted(info.get("ips", [])))
 

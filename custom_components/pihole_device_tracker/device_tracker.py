@@ -27,7 +27,6 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
@@ -39,7 +38,6 @@ async def async_setup_entry(
 
     trackers = [PiholeTracker(coordinator, mac, away_time) for mac in coordinator.data]
     async_add_entities(trackers)
-
 
 class PiholeTracker(CoordinatorEntity, TrackerEntity):
     """Presence via Pi-hole device tracker."""
@@ -101,6 +99,7 @@ class PiholeTracker(CoordinatorEntity, TrackerEntity):
     def is_connected(self) -> bool:
         """Определить, дома ли устройство."""
         if self._mac not in self.coordinator.data:
+            _LOGGER.warning(f"Tracker {self._mac}: нет в данных → not_home")
             return False
 
         info = self.coordinator.data[self._mac]
@@ -108,22 +107,29 @@ class PiholeTracker(CoordinatorEntity, TrackerEntity):
 
         # 1. Если IP устройства есть в ARP кэше (REACHABLE) — дома
         ips = info.get("ips", "")
+        arp_cache = getattr(self.coordinator, '_arp_cache', {})
+        
+        _LOGGER.debug(f"Tracker {self._mac}: IPs={ips}, ARP_cache={list(arp_cache.keys())}")
+        
         if ips:
             for ip in ips.split(", "):
                 ip = ip.strip()
-                if ip in getattr(self.coordinator, '_arp_cache', {}):
-                    _LOGGER.debug(f"Tracker {self._mac}: {ip} в ARP → home")
+                if ip in arp_cache:
+                    _LOGGER.warning(f"Tracker {self._mac}: {ip} в ARP → home")
                     return True
         
         # 2. Если DNS запрос был недавно (в пределах away_time) — дома
         last = info.get(ATTR_LAST_QUERY)
         if isinstance(last, (int, float)):
-            if (now_ts - last) <= self._away:
-                _LOGGER.debug(f"Tracker {self._mac}: свежий DNS → home")
+            seconds_ago = now_ts - last
+            if seconds_ago <= self._away:
+                _LOGGER.warning(f"Tracker {self._mac}: DNS {int(seconds_ago)} сек назад → home")
                 return True
+            else:
+                _LOGGER.warning(f"Tracker {self._mac}: DNS {int(seconds_ago)} сек назад (> {self._away}) → not_home")
 
         # 3. Остальные — не дома
-        _LOGGER.debug(f"Tracker {self._mac}: не в ARP и старый DNS → not_home")
+        _LOGGER.warning(f"Tracker {self._mac}: не в ARP и старый DNS → not_home")
         return False
 
     @property
