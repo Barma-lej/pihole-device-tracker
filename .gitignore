@@ -66,3 +66,4 @@ venv.bak/
 config/
 secrets.yaml
 known_devices.yaml
+pihole-device-tracker.code-workspace
